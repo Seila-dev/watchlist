@@ -13,6 +13,7 @@
     "dotenv": "^17.2.1",
     "next": "15.3.5",
     "nookies": "^2.5.2",
+    "phosphor-react": "^1.4.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sonner": "^2.0.6"
