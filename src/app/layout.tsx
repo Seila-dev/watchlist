@@ -1,10 +1,10 @@
-import ClientAuthProvider from '@/contexts/ClientAuthProvider';
 import './globals.css';
+import ClientAuthProvider from '@/contexts/ClientAuthProvider';
 import { Toaster } from 'sonner';
 
 export const metadata = {
-  title: 'Your App',
-  description: 'Your Description',
+  title: 'Watchlist',
+  description: 'Seu repo, sua vida!',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
