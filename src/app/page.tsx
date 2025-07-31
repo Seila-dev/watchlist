@@ -8,9 +8,8 @@ import { ModalCard } from "./_components/ModalCard";
 export default function Home() {
   return (
     <div className="flex items-center justify-center flex-col gap-4 h-screen w-full max-w-5xl mx-auto">
-
+      
       <h1 className="text-black text-5xl font-bold">ÁREA DE TESTE DE COMPONENTES</h1>
-
       <Image
         alt="testeLogo"
         src={'/assets/logos/watchlist-logo-dark.webp'}

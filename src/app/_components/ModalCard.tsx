@@ -1,15 +1,12 @@
 import React from "react";
 import {
     Card,
-    CardAction,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 
 interface ModalCardProps {
     title: string;
@@ -18,17 +15,17 @@ interface ModalCardProps {
     className?: string;
 }
 
-export function ModalCard({ title, subtitle, children, className = "" }: ModalCardProps) {
+export function ModalCard({ title, subtitle, children}: ModalCardProps) {
     return (
-        <Card className="bg-primary-600 w-full max-w-md p-5">
+        <Card className="bg-card w-full max-w-[480px] p-5 border-0">
 
-            <CardHeader className="">
+            <CardHeader>
                 <div className="flex flex-col items-center justify-center gap-6 mb-4">
                     <Image
                         alt="watchlist-logo"
                         src={'/assets/logos/watchlist-logo-white.webp'}
-                        width={150}
-                        height={80}
+                        width={120}
+                        height={50}
                         priority
                     />
 
@@ -45,25 +42,6 @@ export function ModalCard({ title, subtitle, children, className = "" }: ModalCa
             <CardContent className="flex flex-col gap-2 text-white">
                 {children}
             </CardContent>
-
-            <CardFooter className="flex flex-col items-center justify-between gap-3">
-                <div className="flex  w-full justify-between items-center gap-2">
-                    <span className="h-0.5 w-[70%] opacity-40 bg-gray-400"></span>
-                    <span className="text-white font-bold">ou</span>
-                    <span className="h-0.5 w-[70%] opacity-40 bg-gray-400"></span>
-                </div>
-                <div className="flex flex-col gap-6">
-                    <Button className="bg-white font-bold">
-                        Continue com o Google
-                    </Button>
-                    <span className="text-gray-100 text-sm">
-                        By clicking "Create account" above, you acknowledge that you will receive
-                        updates from the Watchlist team and that you have read, understood, and
-                        agreed to Terms & Conditions and
-                        Privacy Policy.
-                    </span>
-                </div>
-            </CardFooter>
         </Card>
     );
 }
