@@ -1,10 +1,15 @@
 "use client"
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex items-center justify-center flex-col gap-4 h-screen">
+    <div className="flex items-center justify-center flex-col gap-4 h-screen w-full max-w-5xl mx-auto">
+
+      <h1 className="text-black text-5xl font-bold">ÁREA DE TESTE DE COMPONENTES</h1>
+
       <Image
         alt="teste"
         src={'/assets/logos/watchlist-logo-dark.webp'}
@@ -12,6 +17,11 @@ export default function Home() {
         height={80}
       />
       <h1 className="text-black text-5xl font-bold">HOME PAGE</h1>
+
+      <Button>
+        TESTE BOTÃO
+      </Button>
+      <Input />
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import ClientAuthProvider from '@/contexts/ClientAuthProvider';
 import './globals.css';
+import ClientAuthProvider from '@/contexts/ClientAuthProvider';
 import { Toaster } from 'sonner';
 
 export const metadata = {
