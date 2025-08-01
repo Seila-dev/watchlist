@@ -135,57 +135,17 @@ body {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-@layer utilities {
+/* @layer utilities {
   .bg-login {
     @apply relative bg-[#121212] overflow-hidden;
   }
-
-  .bg-login::before {
-    content: "";
-    position: absolute;
-    top: -200px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 800px;
-    height: 800px;
-    background-color: #3730a3; /* indigo-700 */
-    opacity: 0.4;
-    border-radius: 9999px;
-    filter: blur(200px);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .bg-login > * {
-    position: relative;
-    z-index: 10;
-  }
-  
 }
 
-@layer utilities {
+  @layer utilities {
   .bg-card {
-    @apply relative overflow-hidden backdrop-blur-md bg-[#121212]/80 border border-gray-800 rounded-xl;
+    @apply relative overflow-hidden border border-gray-800 rounded-xl text-white;
+    background-color: #121212;
   }
+} 
+*/
 
-  .bg-card::before {
-    content: "";
-    position: absolute;
-    top: -200px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 800px;
-    height: 800px;
-    background-color: #3730a9; /* roxo */
-    opacity: 0.4;
-    border-radius: 9999px;
-    filter: blur(200px);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .bg-card > * {
-    position: relative;
-    z-index: 10;
-  }
-}
