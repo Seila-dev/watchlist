@@ -11,13 +11,13 @@ import Image from "next/image";
 interface ModalCardProps {
     title: string;
     subtitle: string;
-    children: React.ReactNode; //Precisa ser do tipo ReactNode para aceitar componentes;
+    children: React.ReactNode; 
     className?: string;
 }
 
 export function ModalCard({ title, subtitle, children}: ModalCardProps) {
     return (
-        <Card className="bg-card w-full max-w-[480px] p-5 border-0">
+        <Card className="bg-gray-900 w-full max-w-[550px] border-0">
 
             <CardHeader>
                 <div className="flex flex-col items-center justify-center gap-6 mb-4">
@@ -29,12 +29,12 @@ export function ModalCard({ title, subtitle, children}: ModalCardProps) {
                         priority
                     />
 
-                    <span className="h-0.5 w-[90%] opacity-40 bg-gray-400"></span>
+                    <span className="h-0.5 w-[100%] opacity-40 bg-gray-700"></span>
                 </div>
 
-                <div className="text-white flex flex-col items-start justify-start gap-3 font-semiboldbold text-2xl">
+                <div className="text-gray-100 flex flex-col items-start justify-start gap-3 font-semiboldbold text-2xl">
                     <CardTitle>{title}</CardTitle>
-                    <CardDescription className="text-gray-50">{subtitle}</CardDescription>
+                    <CardDescription className="text-gray-500 text-lg">{subtitle}</CardDescription>
                 </div>
 
             </CardHeader>
