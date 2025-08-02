@@ -1,7 +1,7 @@
+import { BackgroundEclipses } from '@/components/BackgroundEclipses';
 import './globals.css';
 import ClientAuthProvider from '@/contexts/ClientAuthProvider';
 import { Toaster } from 'sonner';
-import { BackgroundEclipses } from '../components/BackgroundEclipses';
 
 export const metadata = {
   title: 'Watchlist',
