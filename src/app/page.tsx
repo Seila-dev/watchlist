@@ -1,3 +1,5 @@
+import { GoogleLoginButton } from "@/components/GoogleLoginButton/GoogleLogin";
+import { ModalCard } from "@/components/Modals/ModalCard";
 
 
 export default function Home() {
