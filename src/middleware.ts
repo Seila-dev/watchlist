@@ -9,7 +9,7 @@ export function middleware(request: NextRequest) {
 
   const url = request.nextUrl.clone();
 
-  if (!token && url.pathname.startsWith('/dashboard')) {
+  if (!token && url.pathname.startsWith('/home')) {
     url.pathname = '/login';
     return NextResponse.redirect(url);
   }
@@ -18,5 +18,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*'],
+  matcher: ['/home/:path*'],
 };

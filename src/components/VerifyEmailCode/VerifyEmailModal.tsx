@@ -1,22 +1,26 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { ModalCard } from "../Modals/ModalCard"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button";
 import { usePathname, useRouter } from "next/navigation";
+
+import { AuthContext } from "@/contexts/AuthContext";
 
 
 import { toast } from "sonner";
 
 interface VerifyEmailProps {
     email: string;
+    password?: string;
 }
 
 
-export function VerifyEmailModal({ email }: VerifyEmailProps) {
+export function VerifyEmailModal({ email, password }: VerifyEmailProps) {
 
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
+    const { signIn, reloadUser } = useContext(AuthContext);
 
     const pathname = usePathname();
     const router = useRouter();
@@ -34,12 +38,33 @@ export function VerifyEmailModal({ email }: VerifyEmailProps) {
         return () => clearInterval(timer);
     }, [counter])
 
-    function handleResendCode() {
+    async function handleResendCode() {
         if (counter > 0) return;
-        toast.success("Código enviado para o e-mail!")
 
-        setCounter(30);
+        setIsValidating(true);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/send-verification-code`, {
+                method: "POST",
+                body: JSON.stringify({ email }),
+                headers: { "Content-Type": "application/json" },
+            });
+
+            if (!response.ok) {
+                throw new Error("Erro ao enviar código");
+            }
+
+            toast.success("Código enviado para o e-mail!");
+            setCounter(30);
+        } catch (err) {
+            console.error(err);
+            toast.error("Não foi possível enviar o código. Tente novamente.");
+            setCode("");
+        } finally {
+            setIsValidating(false);
+        }
     }
+
 
     useEffect(() => {
         if (code.length === 6 && !isValidating) {
@@ -51,7 +76,7 @@ export function VerifyEmailModal({ email }: VerifyEmailProps) {
         setIsValidating(true);
         try {
 
-            const response = await fetch(`${API_BASE_URL}/validate-code`, {
+            const response = await fetch(`${API_BASE_URL}/auth/validate-verification-code`, {
                 method: "POST",
                 body: JSON.stringify({ email, code }),
                 headers: { "Content-Type": "application/json" },
@@ -61,15 +86,20 @@ export function VerifyEmailModal({ email }: VerifyEmailProps) {
                 toast.error("Código fornecido inválido.");
                 setCode("");
                 setIsValidating(false);
-                return; 
+                return;
             }
 
-            if (pathname.startsWith("/register/validate-code")) {
-                router.push("/dashboard");
+            if (pathname.startsWith("/register/validate-code") && password) {
+                await signIn({
+                    email,
+                    password
+                })
+                await reloadUser();
+                router.push("/home");
                 toast.success("Código confirmado, seja bem vindo!")
             } else if (pathname.startsWith("/reset-password")) {
                 router.push("/login");
-                toast.success("Código confirmado, realize seu login!")
+                toast.success("Código confirmado, realize seu login com a nova senha!")
             } else {
                 router.push("/");
                 toast.error("Ocorreu algum erro, tente novamente!")
