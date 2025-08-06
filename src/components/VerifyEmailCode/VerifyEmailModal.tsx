@@ -6,22 +6,16 @@ import { Input } from "../ui/input"
 import { Button } from "../ui/button";
 import { usePathname, useRouter } from "next/navigation";
 
-import { AuthContext } from "@/contexts/AuthContext";
-
-
 import { toast } from "sonner";
 
 interface VerifyEmailProps {
     email: string;
-    password?: string;
 }
 
 
-export function VerifyEmailModal({ email, password }: VerifyEmailProps) {
+export function VerifyEmailModal({ email }: VerifyEmailProps) {
 
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
-    const { signIn, reloadUser } = useContext(AuthContext);
-
     const pathname = usePathname();
     const router = useRouter();
     const [counter, setCounter] = useState(0);
@@ -65,6 +59,18 @@ export function VerifyEmailModal({ email, password }: VerifyEmailProps) {
         }
     }
 
+    useEffect(() => {
+        if (!email) return;
+
+        const storageKey = `codeSentFor_${email}`;
+        const alreadySent = sessionStorage.getItem(storageKey);
+
+        if (!alreadySent) {
+            handleResendCode();
+            sessionStorage.setItem(storageKey, "true");
+        }
+    }, [email]);
+
 
     useEffect(() => {
         if (code.length === 6 && !isValidating) {
@@ -89,17 +95,12 @@ export function VerifyEmailModal({ email, password }: VerifyEmailProps) {
                 return;
             }
 
-            if (pathname.startsWith("/register/validate-code") && password) {
-                await signIn({
-                    email,
-                    password
-                })
-                await reloadUser();
-                router.push("/home");
-                toast.success("Código confirmado, seja bem vindo!")
-            } else if (pathname.startsWith("/reset-password")) {
+            if (pathname.startsWith("/register/validate-code")) {
                 router.push("/login");
-                toast.success("Código confirmado, realize seu login com a nova senha!")
+                toast.success("Código confirmado, realize seu login!")
+            } else if (pathname.startsWith("/reset-password")) {
+                router.push("/reset-password/new-password");
+                toast.success("Código confirmado, altere sua senha!")
             } else {
                 router.push("/");
                 toast.error("Ocorreu algum erro, tente novamente!")
@@ -128,7 +129,7 @@ export function VerifyEmailModal({ email, password }: VerifyEmailProps) {
                 />
 
                 {isValidating && (
-                    <span className="text-sm text-grayBrand-500">Validando código...</span>
+                    <span className="text-sm text-grayBrand-500">Processando aguarde...</span>
                 )}
 
                 {isValidating ? null : (

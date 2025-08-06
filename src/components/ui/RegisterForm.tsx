@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useTransition } from "react";
 import { z } from "zod";
-import {zodResolver} from "@hookform/resolvers/zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "next/navigation";
 // criar lógica de submit
 // terminar o schema de validação
 export const registerSchema = z.object({
@@ -18,13 +19,15 @@ export const registerSchema = z.object({
 });
 
 
-interface registerFormProps{
-    email:string
-    // Última alteração feita: 05/08/2025 por Mauricio
+interface registerFormProps {
+  email: string
+  // Última alteração feita: 05/08/2025 por Mauricio
 }
 
 export default function RegisterForm({ email }: registerFormProps) {
-    
+
+  const router = useRouter();
+
   const form = useForm({
     defaultValues: {
       firstName: "",
@@ -36,38 +39,47 @@ export default function RegisterForm({ email }: registerFormProps) {
 
   const [isPending, startTransition] = useTransition();
 
+  function onSubmit(data: any) {
+    startTransition(() => {
+      // Aqui você pode fazer a lógica de cadastro (API, etc)
+      // Depois de criar a conta, navegue para outra rota, passando email
+
+      // Passando email via query param, por exemplo: /welcome?email=...
+      router.push(`/register/validate-code?email=${encodeURIComponent(data.email)}`);
+    });
+  }
 
 
   return (
-    <Form {...form}>
-      <form className="space-y-4">
+    <Form {...form} >
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex gap-4">
 
-        <FormField
-          name="firstName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Primeiro Nome</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Primeiro Nome</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          name="lastName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Sobrenome</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sobrenome</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <FormField

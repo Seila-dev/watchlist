@@ -1,7 +1,6 @@
 "use client"
 
 import { VerifyEmailModal } from "@/components/VerifyEmailCode/VerifyEmailModal";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
