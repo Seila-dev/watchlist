@@ -4,6 +4,8 @@ import { VerifyEmailModal } from "@/components/VerifyEmailCode/VerifyEmailModal"
 import { ModalCard } from "@/components/Modals/ModalCard";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 function ValidateCodeContent() {
   const searchParams = useSearchParams();
@@ -20,15 +22,18 @@ function ValidateCodeContent() {
 
   if (!email) {
     return (
-
       <div className="flex items-center justify-center flex-col gap-4 h-screen">
         <ModalCard
           title="Não foi possivel prosseguir!"
-          subtitle={"Não conseguimos encontrar seu e-mail, retorne para a tela de registro e realize o processo novamente."}
+          subtitle="Não conseguimos encontrar seu e-mail, retorne para a tela de registro e realize o processo novamente."
         >
-          <></>
+          <div className="flex items-center justify-center">
+            <Button asChild>
+              <Link href="/register">Voltar para a página de cadastro</Link>
+            </Button>
+          </div>
         </ModalCard>
-      </div >
+      </div>
     );
   }
 
