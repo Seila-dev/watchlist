@@ -8,5 +8,5 @@ export function GoogleLoginButton() {
     //Login e demais
   }
 
-  return <GoogleLogin onSuccess={handleSuccess} onError={() => console.log('Login Failed')} />
+  return <GoogleLogin onSuccess={handleSuccess} onError={() => console.log('Login Failed')} text='continue_with'/>
 }
