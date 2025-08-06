@@ -15,7 +15,7 @@ interface VerifyEmailProps {
 
 export function VerifyEmailModal({ email }: VerifyEmailProps) {
 
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
+    const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/+$/, "");
     const pathname = usePathname();
     const router = useRouter();
     const [counter, setCounter] = useState(0);
