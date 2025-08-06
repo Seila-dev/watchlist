@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton/GoogleLogin";
 import { ModalCard } from "@/components/Modals/ModalCard";
@@ -7,16 +6,37 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import RegisterForm from "@/components/ui/RegisterForm";
+import RegisterForm from "@/components/RegisterForm/RegisterForm";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [showForm, setShowForm] = useState(false);
 
-  function handleContinue() {
-    if (email.trim() !== "") {
-      setShowForm(true);
-    }
+  const emailSchema = z.object({
+    email: z.email("Digite um email válido!"),
+    // da pra adicionar mais uma validação usando refine
+  });
+
+  type FormData = z.infer<typeof emailSchema>;
+
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    // Não sei se estou fazendo o uso correto do getValues
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(emailSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+
+  function onSubmit(data: FormData) {
+    setShowForm(true);
   }
 
   return (
@@ -24,17 +44,22 @@ export default function RegisterPage() {
       <ModalCard title="Inscrever-se" subtitle="Crie sua conta Watchlist.">
         {!showForm ? (
           <>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              placeholder="you@email.com"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            {/* adicionar validação de email com zod */}
-            <Button size={"lg"} onClick={handleContinue}>
-              Continuar com Email
-            </Button>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                placeholder="you@email.com"
+                type="email"
+                value={email}
+                {...register("email")}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              {errors.email && (
+                <p className="text-red-500/80 text-xs">{errors.email.message}</p>
+              )}
+              <Button size={"lg"} type="submit" className="w-full">
+                Continuar com Email
+              </Button>
+            </form>
             <div className="flex items-center gap-3 my-6">
               <div className="flex-grow border-t border-gray-800" />
               <span className="text-sm text-gray-800">Ou</span>
@@ -44,7 +69,8 @@ export default function RegisterPage() {
           </>
         ) : (
           // Renderiza o formulário se o úsuario tiver preenchido o email
-          <RegisterForm email={email} />
+          // getValues para pegar o email do formulário anterior
+          <RegisterForm email={getValues("email")} />
         )}
 
         <p className="text-gray-500 text-xs my-8">
