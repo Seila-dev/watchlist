@@ -60,6 +60,8 @@ export function VerifyEmailModal({ email }: VerifyEmailProps) {
     }
 
     useEffect(() => {
+        if (!email) return;
+
         const storageKey = `codeSentFor_${email}`;
         const alreadySent = sessionStorage.getItem(storageKey);
 
