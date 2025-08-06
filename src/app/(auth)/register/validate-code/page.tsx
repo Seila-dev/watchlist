@@ -1,6 +1,7 @@
 "use client"
 
 import { VerifyEmailModal } from "@/components/VerifyEmailCode/VerifyEmailModal";
+import { ModalCard } from "@/components/Modals/ModalCard";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 
@@ -11,7 +12,7 @@ function ValidateCodeContent() {
   useEffect(() => {
     const emailParam = searchParams?.get("email");
     console.log("Email param from URL:", emailParam);
-    
+
     if (emailParam) {
       setEmail(decodeURIComponent(emailParam));
     }
@@ -19,14 +20,15 @@ function ValidateCodeContent() {
 
   if (!email) {
     return (
+
       <div className="flex items-center justify-center flex-col gap-4 h-screen">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">Email não encontrado</h2>
-          <p className="text-gray-600">
-            Por favor, volte ao formulário de registro e tente novamente.
-          </p>
-        </div>
-      </div>
+        <ModalCard
+          title="Não foi possivel prosseguir!"
+          subtitle={"Não conseguimos encontrar seu e-mail, retorne para a tela de registro e realize o processo novamente."}
+        >
+          <></>
+        </ModalCard>
+      </div >
     );
   }
 
