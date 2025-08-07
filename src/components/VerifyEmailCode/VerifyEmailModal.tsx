@@ -1,156 +1,92 @@
 "use client"
 
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useContext, useRef } from "react";
 import { ModalCard } from "../Modals/ModalCard"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button";
-import { usePathname, useRouter } from "next/navigation";
-
 import { AuthContext } from "@/contexts/AuthContext";
-
-
-import { toast } from "sonner";
 
 interface VerifyEmailProps {
     email: string;
-    password?: string;
 }
 
+export function VerifyEmailModal({ email }: VerifyEmailProps) {
+    const {
+        emailVerification,
+        sendVerificationCode,
+        setVerificationCode,
+        resendVerificationCode
+    } = useContext(AuthContext);
 
-export function VerifyEmailModal({ email, password }: VerifyEmailProps) {
+    const hasSentCode = useRef(false);
 
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
-    const { signIn, reloadUser } = useContext(AuthContext);
+useEffect(() => {
+  if (!email || hasSentCode.current) return;
 
-    const pathname = usePathname();
-    const router = useRouter();
-    const [counter, setCounter] = useState(0);
-    const [code, setCode] = useState("");
-    const [isValidating, setIsValidating] = useState(false);
+  const storageKey = `codeSentFor_${email}`;
+  const alreadySent = typeof window !== "undefined" && sessionStorage.getItem(storageKey);
 
-    useEffect(() => {
-        if (counter === 0) return;
+  if (!alreadySent) {
+    console.log("Chamando sendVerificationCode!");
+    sendVerificationCode(email);
+    hasSentCode.current = true;
+    sessionStorage.setItem(storageKey, "true");
+  }
+}, []);
 
-        const timer = setInterval(() => {
-            setCounter((prev) => prev - 1);
-        }, 1000)
+    const handleCodeChange = (value: string) => {
+        // Only allow numeric characters and limit to 6 digits
+        const numericValue = value.replace(/\D/g, '').slice(0, 6);
+        setVerificationCode(numericValue);
+    };
 
-        return () => clearInterval(timer);
-    }, [counter])
-
-    async function handleResendCode() {
-        if (counter > 0) return;
-
-        setIsValidating(true);
-
-        try {
-            const response = await fetch(`${API_BASE_URL}/auth/send-verification-code`, {
-                method: "POST",
-                body: JSON.stringify({ email }),
-                headers: { "Content-Type": "application/json" },
-            });
-
-            if (!response.ok) {
-                throw new Error("Erro ao enviar código");
-            }
-
-            toast.success("Código enviado para o e-mail!");
-            setCounter(30);
-        } catch (err) {
-            console.error(err);
-            toast.error("Não foi possível enviar o código. Tente novamente.");
-            setCode("");
-        } finally {
-            setIsValidating(false);
-        }
-    }
-
-
-    useEffect(() => {
-        if (code.length === 6 && !isValidating) {
-            validateCode();
-        }
-    }, [code]);
-
-    async function validateCode() {
-        setIsValidating(true);
-        try {
-
-            const response = await fetch(`${API_BASE_URL}/auth/validate-verification-code`, {
-                method: "POST",
-                body: JSON.stringify({ email, code }),
-                headers: { "Content-Type": "application/json" },
-            });
-
-            if (!response.ok) {
-                toast.error("Código fornecido inválido.");
-                setCode("");
-                setIsValidating(false);
-                return;
-            }
-
-            if (pathname.startsWith("/register/validate-code") && password) {
-                await signIn({
-                    email,
-                    password
-                })
-                await reloadUser();
-                router.push("/home");
-                toast.success("Código confirmado, seja bem vindo!")
-            } else if (pathname.startsWith("/reset-password")) {
-                router.push("/login");
-                toast.success("Código confirmado, realize seu login com a nova senha!")
-            } else {
-                router.push("/");
-                toast.error("Ocorreu algum erro, tente novamente!")
-            }
-
-        } catch (err) {
-            console.error(err);
-            toast.warning("Código inválido. Tente novamente.");
-            setCode("");
-        } finally {
-            setIsValidating(false);
-        }
-    }
-
+    const canResend = emailVerification.counter === 0 && !emailVerification.isVerifying;
 
     return (
-        <ModalCard title="Verifique seu email" subtitle={`Enviamos a você um código de confirmação de seis dígitos para ${email}. Por favor digite abaixo para confirmar seu endereço de e-mail.`}>
+        <ModalCard 
+            title="Verifique seu email" 
+            subtitle={`Enviamos a você um código de confirmação de seis dígitos para ${email}. Por favor digite abaixo para confirmar seu endereço de e-mail.`}
+        >
             <div className="space-y-1">
-
                 <Input
                     placeholder="Digite o código de 6 dígitos"
                     maxLength={6}
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                    disabled={isValidating}
+                    value={emailVerification.code}
+                    onChange={(e) => handleCodeChange(e.target.value)}
+                    disabled={emailVerification.isVerifying}
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                 />
 
-                {isValidating && (
-                    <span className="text-sm text-grayBrand-500">Validando código...</span>
+                {emailVerification.isVerifying && (
+                    <span className="text-sm text-grayBrand-500">
+                        Processando aguarde...
+                    </span>
                 )}
 
-                {isValidating ? null : (
-                    counter > 0 ? (
+                {!emailVerification.isVerifying && (
+                    emailVerification.counter > 0 ? (
                         <span className="text-sm text-grayBrand-500">
-                            Reenviar código em {counter}s
+                            Reenviar código em {emailVerification.counter}s
                         </span>
                     ) : (
                         <div className="flex gap-2">
-                            <span className="text-sm text-grayBrand-500">Não recebeu um código?</span>
+                            <span className="text-sm text-grayBrand-500">
+                                Não recebeu um código?
+                            </span>
                             <Button
                                 variant="link"
-                                onClick={handleResendCode}
-                                className="text-sm text-grayBrand-500 p-0 h-auto underline hover:text-grayBrand-300"
+                                onClick={resendVerificationCode}
+                                disabled={!canResend}
+                                className="text-sm text-grayBrand-500 p-0 h-auto underline hover:text-grayBrand-300 disabled:opacity-50"
                             >
                                 Enviar código agora
                             </Button>
                         </div>
                     )
                 )}
-
             </div>
         </ModalCard>
-    )
+    );
 }
