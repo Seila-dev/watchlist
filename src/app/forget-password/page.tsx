@@ -16,7 +16,7 @@ export default function ForgetPassword() {
         },
     })
 
-    const { handleSubmit } = form
+    const { handleSubmit, formState: { isSubmitting } } = form
 
     function onSubmit(data: ForgotPasswordFormData) {
         console.log("Email enviado para:", data.email)
@@ -46,8 +46,8 @@ export default function ForgetPassword() {
                             )}
                         />
 
-                        <Button type="submit" className="w-full py-6 mb-3">
-                            Enviar código
+                        <Button type="submit" className="w-full py-6 mb-3" disabled={isSubmitting}>
+                            {isSubmitting ? "loading" : "Enviar código"}
                         </Button>
                     </form>
 
