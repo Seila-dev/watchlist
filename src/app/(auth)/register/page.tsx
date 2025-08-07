@@ -40,7 +40,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex items-center justify-center flex-col gap-4 h-screen">
+    <div className="flex items-center justify-center flex-col gap-4 min-h-screen">
       <ModalCard title="Inscrever-se" subtitle="Crie sua conta Watchlist.">
         {!showForm ? (
           <>
