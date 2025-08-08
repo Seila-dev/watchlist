@@ -16,8 +16,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 const signInUserFormSchema = z.object({
-    email: z.email("Digite um email válido!").nonempty("Email é obrigatório"),
-    password: z.string().min(6, "A senha deve ter no mínimo 6 caracteres").nonempty("Senha é obrigatória")
+    email: z.email("Digite um email válido!"),
+    password: z.string().min(6, "A senha deve ter no mínimo 6 caracteres")
 })
 
 type signInUserFormData = z.infer<typeof signInUserFormSchema>;
@@ -82,7 +82,7 @@ export default function LoginPage() {
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
                         className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-300"
-                        tabIndex={-1}
+                        aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
                     >{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button>
                     </div>
                     {errors.password && (
@@ -96,7 +96,7 @@ export default function LoginPage() {
 
 
                     <Button size={"lg"} type="submit" disabled={isSubmitting} className="w-full">
-                        Entrar
+                        {isSubmitting ? "Entrando..." : "Entrar"}
                     </Button>
                 </form>
                 <div className="flex items-center gap-3 my-6">
