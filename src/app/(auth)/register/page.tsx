@@ -40,7 +40,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex items-center justify-center flex-col gap-4 min-h-screen">
+    <div className="flex items-center justify-center flex-col gap-1 md:gap-4 min-h-screen w-full sm:px-0 sm:py-4 md:p-4 ">
       <ModalCard title="Inscrever-se" subtitle="Crie sua conta Watchlist.">
         {!showForm ? (
           <>
@@ -49,7 +49,7 @@ export default function RegisterPage() {
               <Input
                 placeholder="you@email.com"
                 {...register("email")}
-                // onChange={(e) => setEmail(e.target.value)}
+              // onChange={(e) => setEmail(e.target.value)}
               />
               {errors.email && (
                 <p className="text-red-500/80 text-xs">{errors.email.message}</p>
@@ -58,9 +58,9 @@ export default function RegisterPage() {
                 Continuar com Email
               </Button>
             </form>
-            <div className="flex items-center gap-3 my-6">
+            <div className="flex items-center gap-3 my-4">
               <div className="flex-grow border-t border-gray-800" />
-              <span className="text-sm text-gray-800">Ou</span>
+              <span className="text-sm text-gray-400">Ou</span>
               <div className="flex-grow border-t border-gray-800" />
             </div>
             <GoogleLoginButton />
@@ -84,10 +84,10 @@ export default function RegisterPage() {
           </span>
         </p>
 
-        <hr className="border-gray-800 mb-7" />
+        <hr className="border-gray-800 mb-6" />
 
         <div className="flex items-center justify-between">
-          <h6 className="text-[#D1D5DB]">Já tem uma conta?</h6>
+          <h6 className="text-gray-400 text-sm">Já tem uma conta?</h6>
           <Link href={"/login"}>
             <Button variant={"outline"}>Entrar</Button>
           </Link>
