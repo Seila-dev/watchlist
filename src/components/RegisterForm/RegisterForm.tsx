@@ -1,5 +1,4 @@
-"use client"
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import {
   Form,
   FormField,
@@ -10,30 +9,30 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useTransition } from "react";
+import { useContext } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-// criar lógica de submit
-// terminar o schema de validação
+import { AuthContext } from "@/contexts/AuthContext";
 interface registerFormProps {
-  email: string;
+  email?: string;
   // Última alteração feita: 05/08/2025 por Mauricio
 }
 
 export default function RegisterForm({ email }: registerFormProps) {
-  const [isPending, startTransition] = useTransition();
+  const { registerAccount } = useContext(AuthContext);
+
   const router = useRouter();
 
   const registerSchema = z.object({
-    firstName: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
+    username: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
     password: z
       .string()
       .min(6, "No mínimo 6 caracteres")
       .refine((val) => /\d/.test(val), {
         message: "Deve conter pelo menos 1 número",
       })
-      .refine((val) => /[!@#$%^&*(),.?":{}|<>]/.test(val), {
+      .refine((val) => /[!@#$%^&*(),.?":{}|>]/.test(val), {
         message: "Deve conter pelo menos 1 caractere especial",
       }),
     email: z.email("Email inválido"),
@@ -44,30 +43,32 @@ export default function RegisterForm({ email }: registerFormProps) {
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      firstName: "",
+      username: "",
       password: "",
-      email: email,
+      email: email || "",
     },
   });
 
-  function onSubmit(data: RegisterFormData) {
-    startTransition(() => {
-      // Aqui você pode fazer a lógica de envio do formulário, como uma requisição para a API
-      console.log("Formulário enviado com sucesso!", data);
-      // Após o envio bem-sucedido, redirecionar para a página de validação de código
-      router.push("/register/validate-code");
-    });
-  }
-
+  const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
+    try {
+      await registerAccount(data);
+      router.push(
+        `/register/validate-code?email=${encodeURIComponent(data.email)}`
+      );
+    } catch (error: any) {
+      // não sei porque ta caindo nesse erro
+      console.error("Erro ao registrar conta:", error);
+    }
+  };
 
   return (
     <Form {...form}>
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
-          name="firstName"
+          name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Primeiro Nome</FormLabel>
+              <FormLabel>Nome</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -84,7 +85,7 @@ export default function RegisterForm({ email }: registerFormProps) {
               <FormControl>
                 <Input
                   {...field}
-                  disabled
+                  readOnly
                   className="bg-gray-100 text-gray-500 cursor-not-allowed"
                 />
               </FormControl>
@@ -110,8 +111,12 @@ export default function RegisterForm({ email }: registerFormProps) {
           )}
         />
 
-        <Button type="submit" disabled={isPending} className="w-full">
-          {isPending ? "Criando conta..." : "Criar conta"}
+        <Button
+          type="submit"
+          disabled={form.formState.isSubmitting}
+          className="w-full"
+        >
+          {form.formState.isSubmitting ? "Criando conta..." : "Criar conta"}
         </Button>
       </form>
     </Form>

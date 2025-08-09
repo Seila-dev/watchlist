@@ -14,7 +14,6 @@ type FormDataRegister = {
   email: string;
   password: string;
   username: string;
-  lastname?: string;
 };
 
 type EmailVerificationState = {
@@ -175,7 +174,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const registerAccount = async ({ email, password, username, lastname }: FormDataRegister) => {
+  const registerAccount = async ({ email, password, username}: FormDataRegister) => {
     const url = `${baseURL}/users/`;
 
     try {
@@ -184,7 +183,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password, username, lastname }),
+        body: JSON.stringify({ email, password, username }),
       });
 
       if (!request.ok) {

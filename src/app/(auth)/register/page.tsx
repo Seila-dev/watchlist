@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
   const [showForm, setShowForm] = useState(false);
 
   const emailSchema = z.object({
@@ -48,10 +48,8 @@ export default function RegisterPage() {
               <Label htmlFor="email">Email</Label>
               <Input
                 placeholder="you@email.com"
-                type="email"
-                value={email}
                 {...register("email")}
-                onChange={(e) => setEmail(e.target.value)}
+                // onChange={(e) => setEmail(e.target.value)}
               />
               {errors.email && (
                 <p className="text-red-500/80 text-xs">{errors.email.message}</p>
