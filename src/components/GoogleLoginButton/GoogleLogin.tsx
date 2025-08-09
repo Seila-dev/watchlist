@@ -14,10 +14,6 @@ export function GoogleLoginButton() {
   const baseURL = process.env.NEXT_PUBLIC_API_URL;
   const cookieName = process.env.NEXT_PUBLIC_COOKIE_NAME || 'watchlist.token';
 
-    useEffect(() => {
-    console.log('Client ID:', process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
-  }, []);
-
   const handleSuccess = async (credentialResponse: CredentialResponse) => {
     try {
       const res = await fetch(`${baseURL}/auth/google`, {
