@@ -26,7 +26,7 @@ export default function ChangePassword() {
     }
 
     return (
-        <main className="bg-background flex items-center justify-center min-h-screen px-4">
+        <main className="flex items-center justify-center w-screen h-screen">
             <ModalCard
                 title="Alterar sua senha"
                 subtitle="Escolha uma nova senha para sua conta."
