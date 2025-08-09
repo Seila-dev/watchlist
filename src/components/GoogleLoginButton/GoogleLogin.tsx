@@ -53,14 +53,14 @@ export function GoogleLoginButton() {
   };
 
   return (
-    <div className="w-full max-w-[500px] flex justify-center">
+    <div className="w-full flex justify-center">
       <GoogleLogin
         onSuccess={handleSuccess}
         onError={() => console.log('Login Failed')}
         text="continue_with"
-        theme="outline" 
+        useOneTap={true} 
         size="large"  
-        width="500" 
+        width="200" 
       />
     </div>
   )

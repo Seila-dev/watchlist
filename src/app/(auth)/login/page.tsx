@@ -107,9 +107,11 @@ export default function LoginPage() {
           <div className="flex-grow border-t border-gray-800" />
         </div>
 
-        <GoogleLoginButton />
+        <div className="w-full flex justify-center">
+            <GoogleLoginButton />
+        </div>
 
-        <div className="flex items-center justify-between mt-6">
+        <div className="flex items-center justify-between mt-6 gap-4 flex-col sm:flex-row">
           <h6 className="text-gray-400 text-sm">Não tem uma conta?</h6>
           <Link href={"/register"}>
             <Button variant="outline" size="sm">Cadastre-se gratuitamente</Button>
