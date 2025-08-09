@@ -51,7 +51,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center flex-col gap-1 md:gap-4 min-h-screen w-full sm:px-0 sm:py-4 md:p-4 ">
+    <div className="flex items-center justify-center w-screen h-screen ">
       <ModalCard title="Entrar" subtitle="Entre na sua conta Watchlist.">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
