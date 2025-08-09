@@ -20,7 +20,7 @@ export function GoogleLoginButton() {
 
   const handleSuccess = async (credentialResponse: CredentialResponse) => {
     try {
-      const res = await fetch(`${baseURL}/auth`, {
+      const res = await fetch(`${baseURL}/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
