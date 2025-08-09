@@ -12,8 +12,9 @@ type FormData = {
 
 type FormDataRegister = {
   email: string;
+  name: string;
   password: string;
-  username: string;
+  username?: string;
 };
 
 type EmailVerificationState = {
@@ -174,16 +175,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const registerAccount = async ({ email, password, username}: FormDataRegister) => {
+  const registerAccount = async ({ email, password, name}: FormDataRegister) => {
     const url = `${baseURL}/users/`;
 
+    
     try {
       const request = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password, username }),
+        body: JSON.stringify({ email, password, name }),
       });
 
       if (!request.ok) {
@@ -193,16 +195,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       const response = await request.json();
 
-      // After successful registration, initiate email verification
-      setEmailVerification(prev => ({
-        ...prev,
-        email: email
-      }));
+      setCookie(null, 'books-register.token', response.token, {
+        maxAge: 60 * 60 * 4,
+        path: '/',
+        sameSite: 'lax',
+      });
 
-      // Auto-send verification code after registration
-      await sendVerificationCode(email);
+      setUser(response.user);
 
-      toast.success("Conta criada com sucesso! Verifique seu email para continuar.");
+      router.push('/login');
+
+      toast.success("Conta criada com sucesso! Digite um nome de usuário único agora.");
 
     } catch (error: any) {
       console.error('Error on sign up', error);

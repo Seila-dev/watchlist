@@ -58,7 +58,6 @@ export function GoogleLoginButton() {
         onSuccess={handleSuccess}
         onError={() => console.log('Login Failed')}
         text="continue_with"
-        useOneTap={true} 
         size="large"  
         width="200" 
       />

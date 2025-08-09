@@ -1,11 +1,11 @@
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import {
-  Form,
   FormField,
   FormItem,
   FormLabel,
   FormControl,
   FormMessage,
+  Form,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,58 +14,56 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/contexts/AuthContext";
-interface registerFormProps {
+
+interface RegisterFormProps {
   email?: string;
-  // Última alteração feita: 05/08/2025 por Mauricio
 }
 
-export default function RegisterForm({ email }: registerFormProps) {
-  const { registerAccount } = useContext(AuthContext);
+const registerSchema = z.object({
+  name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
+  password: z
+    .string()
+    .min(6, "No mínimo 6 caracteres")
+    .refine((val) => /\d/.test(val), {
+      message: "Deve conter pelo menos 1 número",
+    })
+    .refine((val) => /[!@#$%^&*(),.?":{}|>]/.test(val), {
+      message: "Deve conter pelo menos 1 caractere especial",
+    }),
+  email: z.email("Email inválido"),
+});
 
+type RegisterFormData = z.infer<typeof registerSchema>;
+
+export default function RegisterForm({ email }: RegisterFormProps) {
+  const { registerAccount } = useContext(AuthContext);
   const router = useRouter();
 
-  const registerSchema = z.object({
-    username: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
-    password: z
-      .string()
-      .min(6, "No mínimo 6 caracteres")
-      .refine((val) => /\d/.test(val), {
-        message: "Deve conter pelo menos 1 número",
-      })
-      .refine((val) => /[!@#$%^&*(),.?":{}|>]/.test(val), {
-        message: "Deve conter pelo menos 1 caractere especial",
-      }),
-    email: z.email("Email inválido"),
-  });
-
-  type RegisterFormData = z.infer<typeof registerSchema>;
-
-  const form = useForm<RegisterFormData>({
+  const methods = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
+    mode: "onBlur",
     defaultValues: {
-      username: "",
-      password: "",
       email: email || "",
+      name: "",
+      password: "",
     },
   });
 
   const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
     try {
       await registerAccount(data);
-      router.push(
-        `/register/validate-code?email=${encodeURIComponent(data.email)}`
-      );
+      router.push(`/register/validate-code?email=${encodeURIComponent(data.email)}`);
     } catch (error: any) {
-      // não sei porque ta caindo nesse erro
       console.error("Erro ao registrar conta:", error);
     }
   };
 
   return (
-    <Form {...form}>
-      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+    <FormProvider {...methods}>
+      <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
-          name="username"
+          name="name"
+          control={methods.control}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Nome</FormLabel>
@@ -79,6 +77,7 @@ export default function RegisterForm({ email }: registerFormProps) {
 
         <FormField
           name="email"
+          control={methods.control}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
@@ -96,29 +95,22 @@ export default function RegisterForm({ email }: registerFormProps) {
 
         <FormField
           name="password"
+          control={methods.control}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Senha</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
-                  placeholder="Digite a senha"
-                  {...field}
-                />
+                <Input type="password" placeholder="Digite a senha" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button
-          type="submit"
-          disabled={form.formState.isSubmitting}
-          className="w-full"
-        >
-          {form.formState.isSubmitting ? "Criando conta..." : "Criar conta"}
+        <Button type="submit" disabled={methods.formState.isSubmitting} className="w-full">
+          {methods.formState.isSubmitting ? "Criando conta..." : "Criar conta"}
         </Button>
       </form>
-    </Form>
+    </FormProvider>
   );
 }
