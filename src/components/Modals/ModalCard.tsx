@@ -11,13 +11,13 @@ import Image from "next/image";
 interface ModalCardProps {
     title: string;
     subtitle: string;
-    children: React.ReactNode; 
+    children: React.ReactNode;
     className?: string;
 }
 
-export function ModalCard({ title, subtitle, children}: ModalCardProps) {
+export function ModalCard({ title, subtitle, children }: ModalCardProps) {
     return (
-        <Card className="bg-gray-900 w-full max-w-[550px] border border-gray-800">
+        <Card className="bg-gray-900 w-full h-full sm:h-auto sm:max-w-[550px] border-none sm:rounded-xl flex flex-col">
 
             <CardHeader>
                 <div className="flex flex-col items-center justify-center gap-6 mb-4">
