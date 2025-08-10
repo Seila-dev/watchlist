@@ -22,11 +22,11 @@ export default function ChangePassword() {
 
     function onSubmit(data: ChangePasswordFormData) {
         console.log("Nova senha:", data.senha);
-        // lÃ³gica API
+        // logica API
     }
 
     return (
-        <main className="bg-background flex items-center justify-center min-h-screen px-4">
+        <main className="bg-background w-full flex items-center justify-center min-h-screen px-4">
             <ModalCard
                 title="Alterar sua senha"
                 subtitle="Escolha uma nova senha para sua conta."
