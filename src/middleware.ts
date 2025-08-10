@@ -14,9 +14,14 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  if (!token && url.pathname.startsWith('/register/create-username')) {
+    url.pathname = '/register';
+    return NextResponse.redirect(url);
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/home/:path*'],
+  matcher: ['/home/:path*', '/register/create-username'],
 };

@@ -24,6 +24,10 @@ type EmailVerificationState = {
   code: string;
 };
 
+type CreateUsernameParams = {
+  username: string;
+}
+
 type authContextType = {
   isAuthenticated: boolean;
   user: User | null;
@@ -31,6 +35,7 @@ type authContextType = {
   emailVerification: EmailVerificationState;
   signIn: (data: FormData) => Promise<void>;
   registerAccount: (data: FormDataRegister) => Promise<void>;
+  createUsername: (data: CreateUsernameParams) => Promise<void>;
   signOut: () => void;
   reloadUser: () => Promise<void>;
   // Email verification methods
@@ -175,10 +180,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const registerAccount = async ({ email, password, name}: FormDataRegister) => {
+  const registerAccount = async ({ email, password, name }: FormDataRegister) => {
     const url = `${baseURL}/users/`;
 
-    
+
     try {
       const request = await fetch(url, {
         method: 'POST',
@@ -190,28 +195,54 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (!request.ok) {
         const error = await request.json();
-        throw new Error(error);
+        throw new Error(error.message);
       }
 
       const response = await request.json();
 
-      setCookie(null, 'books-register.token', response.token, {
-        maxAge: 60 * 60 * 4,
+      setCookie(null, cookieName, response.token, {
+        maxAge: 60 * 60 * 12, // 12h
         path: '/',
         sameSite: 'lax',
       });
 
       setUser(response.user);
 
-      router.push('/login');
-
       toast.success("Conta criada com sucesso! Digite um nome de usuário único agora.");
 
     } catch (error: any) {
-      console.error('Error on sign up', error);
       throw error;
     }
   };
+
+  const createUsername = async ({ username }: CreateUsernameParams): Promise<void> => {
+    const url = `${baseURL}/users/update-username`;
+    const token = getClientToken();
+
+    try {
+      const request = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ username }),
+      });
+
+      if (!request.ok) {
+        const error = await request.json();
+        throw new Error(error.message || "Erro ao criar username");
+      }
+
+      const response = await request.json();
+
+      toast.success("Username criado com sucesso, realizando acesso.");
+
+    } catch (error: any) {
+      toast.error(error.message || "Erro desconhecido");
+      throw error;
+    }
+  }
 
   const signOut = useCallback(() => {
     destroyCookie(null, cookieName);
@@ -341,6 +372,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       signIn,
       registerAccount,
       signOut,
+      createUsername,
       reloadUser: loadUserFromCookies,
       sendVerificationCode,
       validateVerificationCode,

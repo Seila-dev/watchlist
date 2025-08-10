@@ -5,7 +5,6 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-  Form,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 interface RegisterFormProps {
   email?: string;
@@ -36,7 +36,7 @@ const registerSchema = z.object({
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export default function RegisterForm({ email }: RegisterFormProps) {
-  const { registerAccount } = useContext(AuthContext);
+  const { registerAccount, signIn } = useContext(AuthContext);
   const router = useRouter();
 
   const methods = useForm<RegisterFormData>({
@@ -52,9 +52,18 @@ export default function RegisterForm({ email }: RegisterFormProps) {
   const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
     try {
       await registerAccount(data);
-      router.push(`/register/validate-code?email=${encodeURIComponent(data.email)}`);
+      await signIn({
+        email: data.email,
+        password: data.password
+      })
+      router.push("/register/create-username");
     } catch (error: any) {
-      console.error("Erro ao registrar conta:", error);
+      if (error.message === "E-mail already exists") {
+        methods.setError("email", {
+          type: "manual",
+          message: "E-mail already exists"
+        });
+      } 
     }
   };
 

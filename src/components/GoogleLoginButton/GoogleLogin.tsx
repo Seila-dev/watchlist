@@ -49,14 +49,15 @@ export function GoogleLoginButton() {
   };
 
   return (
-    <div className="w-full flex justify-center">
-      <GoogleLogin
-        onSuccess={handleSuccess}
-        onError={() => console.log('Login Failed')}
-        text="continue_with"
-        size="large"  
-        width="200" 
-      />
+    <div className="flex w-full">
+      <div className="flex-1">
+        <GoogleLogin
+          onSuccess={handleSuccess}
+          onError={() => console.log('Login Failed')}
+          text="continue_with"
+          size="large"
+        />
+      </div>
     </div>
   )
 }
