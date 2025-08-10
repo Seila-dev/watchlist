@@ -15,7 +15,8 @@ const createApiInstance = (): AxiosInstance => {
 
   api.interceptors.request.use(
     (config) => {
-      const { cookieName: token } = parseCookies();
+      const cookies = parseCookies();
+      const token = cookies[cookieName];
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -53,14 +54,15 @@ export function useApi() {
 
 export function getClientToken(): string | undefined {
   if (typeof window === 'undefined') return undefined;
-  const { cookieName: token } = parseCookies();
+  const cookies = parseCookies();
+  const token = cookies[cookieName];
   return token;
 }
 
 // Optional: Hook for making authenticated requests with better error handling
 export function useAuthenticatedRequest() {
   const api = useApi();
-  
+
   const makeRequest = useCallback(async <T>(
     requestFn: (api: AxiosInstance) => Promise<T>
   ): Promise<T> => {
@@ -83,8 +85,8 @@ export function getServerApi(token?: string): AxiosInstance {
     timeout: 10000,
     headers: token
       ? {
-          Authorization: `Bearer ${token}`,
-        }
+        Authorization: `Bearer ${token}`,
+      }
       : {},
   });
 
