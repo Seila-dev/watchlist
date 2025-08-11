@@ -31,7 +31,7 @@ function ChangePasswordContent() {
 
     const form = useForm<ChangePasswordFormData>({
         resolver: zodResolver(changePasswordSchema),
-        mode: "onBlur",
+        mode: "onChange",
         defaultValues: { password: "", confirmPassword: "" },
     });
 
