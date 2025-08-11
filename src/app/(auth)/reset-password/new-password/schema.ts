@@ -2,10 +2,10 @@ import { z } from "zod"
 
 export const changePasswordSchema = z
     .object({
-        senha: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
-        confirmarSenha: z.string(),
+        password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
+        confirmPassword: z.string(),
     })
-    .refine((data) => data.senha === data.confirmarSenha, {
+    .refine((data) => data.password === data.confirmPassword, {
         message: 'As senhas não coincidem! Tente novamente.',
         path: ['confirmarSenha'],
     })
