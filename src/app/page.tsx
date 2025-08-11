@@ -16,7 +16,7 @@ export default function Home() {
 
   return (
     <main
-      className="bg-background flex items-center justify-center w-screen h-screen"
+      className="bg-background flex items-center justify-center p-10 sm:p-0 w-screen min-h-screen"
     >
       <ModalCard
         title='Página temporária'
