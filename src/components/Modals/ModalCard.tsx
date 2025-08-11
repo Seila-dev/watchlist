@@ -17,7 +17,7 @@ interface ModalCardProps {
 
 export function ModalCard({ title, subtitle, children }: ModalCardProps) {
     return (
-        <Card className="bg-gray-900 w-full h-full sm:h-auto sm:max-w-[550px] border-none sm:rounded-xl flex flex-col">
+        <Card className="bg-gray-900 w-full h-full sm:h-auto sm:max-w-[550px] border-none sm:rounded-xl flex flex-col rounded-xl">
 
             <CardHeader>
                 <div className="flex flex-col items-center justify-center gap-6 mb-4">
