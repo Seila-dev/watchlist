@@ -135,17 +135,15 @@ body {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-/* @layer utilities {
-  .bg-login {
-    @apply relative bg-[#121212] overflow-hidden;
+@layer utilities {
+  .bg-destructive {
+    background-color: var(--destructive);
+  }
+  .hover\:bg-destructive\/90:hover {
+    background-color: rgba(var(--destructive), 0.9);
+  }
+  .focus-visible\:ring-destructive\/20:focus-visible {
+    box-shadow: 0 0 0 3px rgba(var(--destructive), 0.2);
   }
 }
-
-  @layer utilities {
-  .bg-card {
-    @apply relative overflow-hidden border border-gray-800 rounded-xl text-white;
-    background-color: #121212;
-  }
-} 
-*/
 

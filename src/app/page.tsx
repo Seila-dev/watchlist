@@ -9,7 +9,7 @@ import { useContext, useEffect } from 'react';
 export default function Home() {
   const { isAuthenticated, user, loading, signOut } = useContext(AuthContext);
 
-    // Loga no console sempre que o user mudar
+  // Loga no console sempre que o user mudar
   useEffect(() => {
     console.log("📌 Usuário atual no AuthContext:", user);
   }, [user]);
@@ -24,27 +24,27 @@ export default function Home() {
         className=""
       >
         <div className="p-4 my-4 rounded-md border border-gray-700 bg-gray-900 text-gray-300 w-full max-w-md">
-{loading ? (
-  <p>💬 Verificando autenticação...</p>
-) : isAuthenticated ? (
-  <div className="flex flex-col items-center gap-2">
-    <p>
-      ✅ Logado como{" "}
-      <strong>
-        {user?.username
-          ? user.username
-          : user?.name
-          ? user.name
-          : user?.email}
-      </strong>
-    </p>
-    <Button variant="destructive" onClick={signOut}>
-      Sair
-    </Button>
-  </div>
-) : (
-  <p>❌ Não autenticado</p>
-)}
+          {loading ? (
+            <p>💬 Verificando autenticação...</p>
+          ) : isAuthenticated ? (
+            <div className="flex flex-col items-center gap-4">
+              <p>
+                ✅ Logado como{" "}
+                <strong>
+                  {user?.username
+                    ? user.username
+                    : user?.name
+                      ? user.name
+                      : user?.email}
+                </strong>
+              </p>
+              <Button variant="destructive" onClick={signOut} className='w-full'>
+                Sair
+              </Button>
+            </div>
+          ) : (
+            <p>❌ Não autenticado</p>
+          )}
         </div>
         <div className="flex flex-col sm:flex-row gap-4">
           <Button asChild>
