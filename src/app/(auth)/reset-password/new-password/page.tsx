@@ -15,7 +15,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 
 export default function ChangePassword() {
     return (
-        <Suspense fallback={<div className="flex items-center justify-center h-screen">Carregando...</div>}>
+        <Suspense fallback={<div className="flex items-center justify-center w-screen h-screen">Carregando...</div>}>
             <ChangePasswordContent />
         </Suspense>
     );
@@ -31,8 +31,8 @@ function ChangePasswordContent() {
 
     const form = useForm<ChangePasswordFormData>({
         resolver: zodResolver(changePasswordSchema),
-        mode: "onChange",
-        defaultValues: { senha: "", confirmarSenha: "" },
+        mode: "onBlur",
+        defaultValues: { password: "", confirmPassword: "" },
     });
 
     const { formState: { isValid, isSubmitting } } = form;
@@ -43,24 +43,20 @@ function ChangePasswordContent() {
         setError("");
         setSuccess("");
 
-        const senha = data.senha.trim();
-        const confirmarSenha = data.confirmarSenha.trim();
-
-        console.log("Email enviado:", email);
-        console.log("Code enviado:", code);
-        console.log("Nova senha:", senha);
+        const password = data.password.trim();
+        const confirmPassword = data.confirmPassword.trim();
 
         if (!email || !code) {
             setError("Link inválido. Refaça o processo de recuperação.");
             return;
         }
-        if (senha !== confirmarSenha) {
+        if (password !== confirmPassword) {
             setError("As senhas não coincidem.");
             return;
         }
 
         try {
-            await resetPassword(email, code, senha);
+            await resetPassword(email, code, password);
             setSuccess("Senha alterada com sucesso! Faça login.");
             setTimeout(() => router.replace("/login"), 800);
         } catch (e: any) {
@@ -76,38 +72,37 @@ function ChangePasswordContent() {
     };
 
     return (
-        <main className="bg-background w-full flex items-center justify-center min-h-screen px-4">
+        <main className="flex items-center justify-center w-screen h-screen">
             <ModalCard
                 title="Alterar sua senha"
                 subtitle="Escolha uma nova senha para sua conta."
-                className="flex flex-col items-start justify-start gap-6"
             >
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
                         <FormField
                             control={form.control}
-                            name="senha"
+                            name="password"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-[14px] leading-[150%]" htmlFor="senha">Senha</FormLabel>
+                                    <FormLabel htmlFor="senha">Senha</FormLabel>
                                     <FormControl>
                                         <Input id="senha" type="password" placeholder="Nova senha" autoComplete="new-password" {...field} />
                                     </FormControl>
-                                    <FormMessage className="text-systemStatus-error text-base leading-[150%] mb-6" />
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
 
                         <FormField
                             control={form.control}
-                            name="confirmarSenha"
+                            name="confirmPassword"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-[14px] leading-[150%]" htmlFor="confirmarSenha">Confirme sua senha</FormLabel>
+                                    <FormLabel htmlFor="confirmPassword">Confirme sua senha</FormLabel>
                                     <FormControl>
-                                        <Input id="confirmarSenha" type="password" placeholder="Confirmar nova senha" autoComplete="new-password" {...field} />
+                                        <Input id="confirmPassword" type="password" placeholder="Confirmar nova senha" autoComplete="new-password" {...field} />
                                     </FormControl>
-                                    <FormMessage className="text-systemStatus-error text-base leading-[150%] mb-6" />
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -117,17 +112,20 @@ function ChangePasswordContent() {
 
                         <Button
                             type="submit"
-                            className={`w-full py-6 mb-3 transition bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 ${(!isValid || isSubmitting) ? "opacity-60 cursor-not-allowed" : ""}`}
+                            className="w-full my-5"
                             disabled={!isValid || isSubmitting}
+                            variant={"default"}
                         >
                             {isSubmitting ? "Salvando..." : "Alterar a senha"}
                         </Button>
                     </form>
                 </Form>
 
-                <Link className="text-center text-sm underline" href="/login">
-                    Retornar à tela de login
-                </Link>
+                <div className="w-full flex justify-center">
+                    <Link className="text-xs font-bold" href="/login">
+                        Voltar
+                    </Link>
+                </div>
             </ModalCard>
         </main>
     );
