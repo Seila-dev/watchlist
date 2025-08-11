@@ -10,6 +10,7 @@ import { forgotPasswordSchema, ForgotPasswordFormData } from "./schema";
 import { useState, useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function ForgetPassword() {
     const [error, setError] = useState<string>("");
@@ -32,23 +33,22 @@ export default function ForgetPassword() {
         const email = data.email.trim().toLowerCase();
 
         try {
-            await sendVerificationCode(email );
+            await sendVerificationCode(email);
             setSuccess("Te enviamos um código para redefinir sua senha. Verifique seu email.");
             router.push(`/reset-password/validate-code?email=${encodeURIComponent(data.email)}`);
         } catch (e: any) {
             const status = e?.status;
             if (status === 404) {
                 setError("Email não cadastrado.");
-            } 
+            }
         }
     };
 
     return (
-        <main className="bg-background flex items-center justify-center min-h-screen px-4">
+        <main className="flex items-center justify-center w-screen h-screen">
             <ModalCard
                 title="Esqueceu sua senha?"
                 subtitle="Digite seu endereço de email abaixo e lhe enviaremos um código para entrar e redefinir sua senha."
-                className="flex flex-col items-start justify-start gap-6"
             >
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
@@ -84,7 +84,7 @@ export default function ForgetPassword() {
                             className="w-full py-6 mt-4 mb-3"
                             disabled={isSubmitting || !isValid}
                         >
-                            {isSubmitting ? "loading" : "Enviar código"}
+                            {isSubmitting ? "Enviando" : "Enviar código"}
                         </Button>
                     </form>
                 </Form>
@@ -93,9 +93,9 @@ export default function ForgetPassword() {
 
                 <div className="text-grayBrand-300 flex items-center justify-between mt-9 gap-8 w-full">
                     <p>Lembra da sua senha?</p>
-                    <button className="w-[94px] h-[48px] rounded-[8px] border border-grayBrand-800">
-                        Entrar
-                    </button>
+                    <Link href={"/login"}>
+                        <Button variant={"outline"}>Entrar</Button>
+                    </Link>
                 </div>
             </ModalCard>
         </main>
