@@ -44,6 +44,7 @@ type authContextType = {
   setVerificationCode: (code: string) => void;
   resetVerification: () => void;
   resendVerificationCode: () => Promise<void>;
+  resetPassword: (email: string, code: string, newPassword: string) => Promise<void>;
 };
 
 export const AuthContext = createContext({} as authContextType);
@@ -67,58 +68,51 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = !!user;
 
   const validateVerificationCode = useCallback(async (email: string, code: string) => {
-    setEmailVerification(prev => ({
-      ...prev,
-      isVerifying: true
-    }));
+    setEmailVerification(p => ({ ...p, isVerifying: true }));
 
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/validate-verification-code`, {
+      const pathname = window.location.pathname;
+      const isResetFlow = pathname.startsWith("/reset-password") || pathname.startsWith("/reset-code");
+
+      const endpoint = `${API_BASE_URL}${isResetFlow ? "/auth/validate-password-reset-code" : "/auth/validate-verification-code"
+        }`;
+
+      const payload = { email: email.trim().toLowerCase(), code: code.trim() };
+      console.log("VALIDATE endpoint:", endpoint, "payload:", payload);
+
+      const response = await fetch(endpoint, {
         method: "POST",
-        body: JSON.stringify({ email, code }),
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
         toast.error("Código fornecido inválido.");
-        setEmailVerification(prev => ({
-          ...prev,
-          code: "",
-          isVerifying: false
-        }));
+        setEmailVerification(p => ({ ...p, code: "", isVerifying: false }));
         return;
       }
 
-      const pathname = window.location.pathname;
-
-      if (pathname.startsWith("/register/validate-code")) {
+      if (isResetFlow) {
+        router.push(`/reset-password/new-password?email=${encodeURIComponent(payload.email)}&code=${encodeURIComponent(payload.code)}`);
+        toast.success("Código confirmado, altere sua senha!");
+      } else if (pathname.startsWith("/register/validate-code")) {
         router.push("/login");
         toast.success("Código confirmado, realize seu login!");
-      } else if (pathname.startsWith("/reset-password")) {
-        router.push("/reset-password/new-password");
-        toast.success("Código confirmado, altere sua senha!");
       } else {
         router.push("/");
         toast.success("Email verificado com sucesso!");
       }
 
-      // Clear verification state on success
       resetVerification();
-
     } catch (err) {
       console.error(err);
       toast.warning("Código inválido. Tente novamente.");
-      setEmailVerification(prev => ({
-        ...prev,
-        code: ""
-      }));
+      setEmailVerification(p => ({ ...p, code: "" }));
     } finally {
-      setEmailVerification(prev => ({
-        ...prev,
-        isVerifying: false
-      }));
+      setEmailVerification(p => ({ ...p, isVerifying: false }));
     }
   }, [API_BASE_URL, router]);
+
 
   // Timer effect for verification countdown
   useEffect(() => {
@@ -289,52 +283,81 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   // Email verification methods
-  const sendVerificationCode = async (email: string) => {
+  const sendVerificationCode = async (rawEmail: string) => {
+    const email = rawEmail.trim().toLowerCase();
+
     setEmailVerification(prev => ({
       ...prev,
       isVerifying: true,
-      email: email
+      email,
     }));
 
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/send-verification-code`.replace(/([^:]\/)\/+/g, "$1"), {
+      const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+      const isResetFlow = pathname.startsWith("/reset-password") || pathname.startsWith("/reset-code");
+
+      const endpointPath = isResetFlow
+        ? "/auth/send-password-reset-code"
+        : "/auth/send-verification-code";   
+
+      const url = `${API_BASE_URL}${endpointPath}`.replace(/([^:]\/)\/+/g, "$1");
+
+      const res = await fetch(url, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
         body: JSON.stringify({ email }),
-        headers: { "Content-Type": "application/json" },
       });
 
-      if (!response.ok) {
-        throw new Error("Erro ao enviar código");
+      if (res.status === 204) {
+        toast.success("Código enviado para o e-mail!");
+        setEmailVerification(p => ({ ...p, counter: 30, code: "" }));
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem(`codeSentFor_${isResetFlow ? "reset" : "verify"}_${email}`, "true");
+        }
+        return;
+      }
+
+      const isJson = (res.headers.get("content-type") || "").includes("application/json");
+      const body = isJson ? await res.json().catch(() => ({})) : await res.text().catch(() => "");
+
+      if (!res.ok) {
+        let message =
+          (isJson && (body as any)?.message) ||
+          (typeof body === "string" && body) ||
+          "Não foi possível enviar o código. Tente novamente.";
+
+        if (res.status === 404) {
+          message = "Se existir uma conta com esse e-mail, enviaremos um código.";
+        } else if (res.status === 429) {
+          message = "Muitas tentativas. Aguarde um pouco antes de tentar novamente.";
+        } else if (res.status >= 500) {
+          message = "Serviço indisponível no momento. Tente novamente em instantes.";
+        }
+
+        toast.error(message);
+        setEmailVerification(p => ({ ...p, code: "" }));
+        return;
       }
 
       toast.success("Código enviado para o e-mail!");
+      setEmailVerification(p => ({ ...p, counter: 30, code: "" }));
 
-      setEmailVerification(prev => ({
-        ...prev,
-        counter: 30,
-        code: ""
-      }));
-
-      // Store in sessionStorage to prevent duplicate sends
-      if (typeof window !== 'undefined') {
-        const storageKey = `codeSentFor_${email}`;
-        sessionStorage.setItem(storageKey, "true");
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem(`codeSentFor_${isResetFlow ? "reset" : "verify"}_${email}`, "true");
       }
-
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      toast.error("Não foi possível enviar o código. Tente novamente.");
-      setEmailVerification(prev => ({
-        ...prev,
-        code: ""
-      }));
+      const isAbort = err?.name === "AbortError";
+      toast.error(isAbort ? "Tempo de requisição excedido. Tente novamente." : "Falha de rede. Verifique sua conexão.");
+      setEmailVerification(p => ({ ...p, code: "" }));
     } finally {
-      setEmailVerification(prev => ({
-        ...prev,
-        isVerifying: false
-      }));
+      setEmailVerification(p => ({ ...p, isVerifying: false }));
     }
   };
+
 
 
 
@@ -363,6 +386,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loadUserFromCookies();
   }, []);
 
+  const resetPassword = async (email: string, code: string, newPassword: string): Promise<void> => {
+    const url = `${API_BASE_URL}/auth/reset-password`;
+
+    const req = await fetch(url, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({
+        email: email.trim().toLowerCase(),
+        code: code.trim(),
+        newPassword,
+      }),
+    });
+
+    if (req.status === 204) return;
+
+    let body: any = {};
+    const isJson = (req.headers.get("content-type") || "").includes("application/json");
+    if (isJson) body = await req.json().catch(() => ({}));
+
+    if (!req.ok) {
+      const message = body?.message || "Não foi possível alterar a senha.";
+      const err: any = new Error(message);
+      err.status = req.status;
+      throw err;
+    }
+  };
+
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -378,7 +429,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       validateVerificationCode,
       setVerificationCode,
       resetVerification,
-      resendVerificationCode
+      resendVerificationCode,
+      resetPassword,
     }}>
       {children}
     </AuthContext.Provider>

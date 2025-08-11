@@ -84,7 +84,7 @@ export default function ForgetPassword() {
                             className="w-full py-6 mt-4 mb-3"
                             disabled={isSubmitting || !isValid}
                         >
-                            {isSubmitting ? "loading" : "Enviar código"}
+                            {isSubmitting ? "Enviando" : "Enviar código"}
                         </Button>
                     </form>
                 </Form>
