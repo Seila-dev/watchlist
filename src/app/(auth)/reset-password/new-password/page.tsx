@@ -1,5 +1,9 @@
 'use client';
 
+import { Suspense, useContext, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+
 import { ModalCard } from "@/components/Modals/ModalCard";
 import { Form, FormItem, FormControl, FormLabel, FormField, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -7,11 +11,17 @@ import { Input } from "@/components/ui/input";
 import { changePasswordSchema, ChangePasswordFormData } from "./schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useContext, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { AuthContext } from "@/contexts/AuthContext";
 
 export default function ChangePassword() {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center h-screen">Carregando...</div>}>
+            <ChangePasswordContent />
+        </Suspense>
+    );
+}
+
+function ChangePasswordContent() {
     const router = useRouter();
     const params = useSearchParams();
     const { resetPassword } = useContext(AuthContext);
@@ -32,7 +42,6 @@ export default function ChangePassword() {
     const onSubmit = async (data: ChangePasswordFormData) => {
         setError("");
         setSuccess("");
-
 
         const senha = data.senha.trim();
         const confirmarSenha = data.confirmarSenha.trim();
@@ -116,7 +125,9 @@ export default function ChangePassword() {
                     </form>
                 </Form>
 
-                <a className="text-center text-sm" href="#">Retornar à tela de login</a>
+                <Link className="text-center text-sm underline" href="/login">
+                    Retornar à tela de login
+                </Link>
             </ModalCard>
         </main>
     );
