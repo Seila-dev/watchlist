@@ -147,3 +147,20 @@ body {
   }
 }
 
+/*scrollbar*/
+body::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+body::-webkit-scrollbar-track {
+  background: #e0e7ff; 
+
+}
+body::-webkit-scrollbar-thumb {
+  background-color: #2c2380; 
+  transition: background-color 0.3s ease;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: #1e1a5f;
+}
