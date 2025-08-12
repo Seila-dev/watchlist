@@ -6,9 +6,39 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Toaster } from 'sonner';
 
 export const metadata = {
-  title: 'Watchlist',
-  description: 'Seu repo, sua vida!',
+  title: "Watchlist",
+  description : "Watchlist facilita sua vida centralizando o consumo de entretenimento digital. Registre o que você assiste ou lê, sincronize seu progresso e nunca mais perca o fio da meada.",
+  keywords: "watchlist, organizar filmes, acompanhar séries, ler livros, animes, entretenimento digital, interface intuitiva",
+  openGraph: {
+    title: "Watchlist - Sua central de entretenimento digital",
+    description: "Centralize filmes, séries, livros e animes em um só lugar com Watchlist. Interface intuitiva, progresso sincronizado e controle total da sua privacidade.",
+    url: "https://your-watchlist.vercel.app/",
+    siteName: "Watchlist",
+    images: [
+      {
+        url: "/assets/logos/open-graph-image.webp",
+        width: 1200,
+        height: 630,
+        alt: "Watchlist - Organize e acompanhe seu entretenimento",
+      },
+    ],
+    locale: "pt_BR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Watchlist - Organize e acompanhe seus filmes, séries, livros e animes",
+    description:
+      "Centralize seu entretenimento digital com Watchlist. Fácil, rápido e seguro.",
+    image: ["/assets/logos/open-graph-image.webp"],
+  },
+  robots: "index, follow",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/assets/logos/icon-purple-logo.webp",
+  },
 };
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
