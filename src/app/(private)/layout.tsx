@@ -1,7 +1,7 @@
 export default function PrivateLayout({ children }: { children: React.ReactNode }) {
   return (
-      <body>
-        <main>{children}</main>
-      </body>
+    <main className="bg-background flex items-center justify-center">
+      {children}
+    </main>
   );
 }
