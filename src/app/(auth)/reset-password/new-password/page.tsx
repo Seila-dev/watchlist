@@ -31,7 +31,7 @@ function ChangePasswordContent() {
 
     const form = useForm<ChangePasswordFormData>({
         resolver: zodResolver(changePasswordSchema),
-        mode: "onBlur",
+        mode: "onChange",
         defaultValues: { password: "", confirmPassword: "" },
     });
 
@@ -72,7 +72,7 @@ function ChangePasswordContent() {
     };
 
     return (
-        <main className="flex items-center justify-center w-screen h-screen">
+        <main className="flex items-center justify-center p-10 sm:p-0 w-screen min-h-screen">
             <ModalCard
                 title="Alterar sua senha"
                 subtitle="Escolha uma nova senha para sua conta."

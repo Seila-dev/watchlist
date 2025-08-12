@@ -45,7 +45,7 @@ export default function ForgetPassword() {
     };
 
     return (
-        <main className="flex items-center justify-center w-screen h-screen">
+        <main className="flex items-center justify-center p-10 sm:p-0 w-screen min-h-screen">
             <ModalCard
                 title="Esqueceu sua senha?"
                 subtitle="Digite seu endereço de email abaixo e lhe enviaremos um código para entrar e redefinir sua senha."

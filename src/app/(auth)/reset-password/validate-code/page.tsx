@@ -22,7 +22,7 @@ function ValidateCodeContent() {
 
   if (!email) {
     return (
-      <div className="flex items-center justify-center w-screen h-screen">
+      <div className="flex items-center justify-center p-10 sm:p-0 w-screen min-h-screen">
         <ModalCard
           title="Não foi possivel prosseguir!"
           subtitle="Não conseguimos encontrar seu e-mail, retorne para a tela de registro e realize o processo novamente."
