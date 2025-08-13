@@ -1,33 +1,27 @@
-// app/auth/google/callback/page.tsx
 'use client'
 
 import { useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 export default function GoogleCallbackPage() {
-  const searchParams = useSearchParams();
-
   useEffect(() => {
-    const code = searchParams?.get('code');
-    const error = searchParams?.get('error');
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const error = params.get('error');
 
     if (code) {
-      // Envia o código de autorização para a janela pai
       window.opener?.postMessage({
         type: 'GOOGLE_AUTH_SUCCESS',
-        code: code
+        code
       }, window.location.origin);
     } else if (error) {
-      // Envia erro para a janela pai
       window.opener?.postMessage({
         type: 'GOOGLE_AUTH_ERROR',
-        error: error
+        error
       }, window.location.origin);
     }
 
-    // Fecha a janela popup
     window.close();
-  }, [searchParams]);
+  }, []);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
