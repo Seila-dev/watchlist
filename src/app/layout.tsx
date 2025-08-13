@@ -1,5 +1,4 @@
-import { BackgroundEclipses } from '@/components/Backgrounds/BackgroundEclipses';
-import { BackgroundTestIphone } from '@/components/Backgrounds/BackgroundTestIphone';
+import { Background } from '@/components/Backgrounds/BackgroundEclipses';
 import './globals.css';
 import ClientAuthProvider from '@/contexts/ClientAuthProvider';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -49,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ClientAuthProvider>
             <Toaster />
             <div>
-              <BackgroundTestIphone />
+              <Background />
               {children}
             </div>
           </ClientAuthProvider>
