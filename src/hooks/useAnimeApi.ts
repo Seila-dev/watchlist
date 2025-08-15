@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import apiAnime from "../services/animeApi";
 
-
+//Essa interface funciona somente para algumas rotas, teria que criar mais
 interface Anime {
   mal_id: number;
   title: string;

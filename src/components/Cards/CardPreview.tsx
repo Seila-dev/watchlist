@@ -37,7 +37,7 @@ export function CardPreview({ mal_id, title, score, type, aired, images }: CardP
             {/* Gradiente escuro no rodapé */}
             <div className="absolute bottom-0 left-0 w-full h-36 bg-gradient-to-t from-black to-transparent"></div>
 
-            <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10">
+            <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2">
                 {/* Tipo e botão de favorito */}
                 <div className="flex w-full justify-between mb-1">
                     <div className="bg-grayBrand-900 flex px-3 py-1 rounded-full items-center justify-center text-xs font-semibold">
