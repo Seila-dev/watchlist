@@ -1,49 +1,43 @@
 "use client"
 
-import { useEffect, useState } from "react";
-import apiAnime from "@/hooks/useAnimeApi";
+import { useEffect } from "react";
+import useAnimeApi from "@/hooks/useAnimeApi";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { CardPreview } from "@/components/Cards/CardPreview";
 
 interface Anime {
   mal_id: number;
   title: string;
   score: string;
+  type: string;
+  aired: {
+    from: string | null;
+  },
   images: {
     jpg: {
       image_url: string;
-    }
+    };
   };
 }
 
 export default function Home() {
 
-  const [listAnimes, setListAnimes] = useState<Anime[]>([]);
-
-
-  async function loadAnimes() {
-    try {
-      const response = await apiAnime.get('/top/anime');
-      console.log(response.data)
-      setListAnimes(response.data.data);
-    } catch (error: any) {
-      console.log('Erro ao buscar projetos');
-    }
-  }
+  const { animes, getTopAnimes } = useAnimeApi();
 
   useEffect(() => {
-    loadAnimes();
+    getTopAnimes()
   }, [])
 
-
   return (
-    <div className=" bg-background flex items-center justify-center flex-col gap-4 h-screen">
-      <h1 className="text-gray-400 text-4xl">HOME PAGE</h1>
-      <div className="flex flex-wrap gap-4 justify-center">
-        {listAnimes.map(anime => (
-          <div key={anime.mal_id} className="flex flex-col border p-2 rounded shadow">
-            <h2 className="text-lg font-semibold text-white">{anime.title}</h2>
-            <h2 className="text-lg font-semibold text-white">Score: {anime.score}</h2>
-            <img src={anime.images.jpg.image_url} alt={anime.title} width={150} />
-          </div>
+    <div className=" bg-background flex items-center justify-center flex-col gap-4 min-h-screen">
+
+      <div className="flex flex-wrap gap-10 justify-center p-8">
+        {animes.map((anim) => (
+          <CardPreview
+            key={anim.mal_id}
+            {...anim}
+          />
         ))}
       </div>
     </div>
