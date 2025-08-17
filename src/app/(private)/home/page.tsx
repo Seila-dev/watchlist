@@ -2,44 +2,28 @@
 
 import { useEffect } from "react";
 import useAnimeApi from "@/hooks/useAnimeApi";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { CardPreview } from "@/components/Cards/CardPreview";
+import { CardSkeleton } from "@/components/Cards/CardSkeleton";
 
-interface Anime {
-  mal_id: number;
-  title: string;
-  score: string;
-  type: string;
-  aired: {
-    from: string | null;
-  },
-  images: {
-    jpg: {
-      image_url: string;
-    };
-  };
-}
 
 export default function Home() {
 
-  const { animes, getTopAnimes } = useAnimeApi();
+  const { animes, loading, getTopAnimes } = useAnimeApi();
 
   useEffect(() => {
     getTopAnimes()
   }, [])
 
   return (
-    <div className=" bg-background flex items-center justify-center flex-col gap-4 min-h-screen">
-
+    <div className="bg-background flex items-center justify-center flex-col gap-4 min-h-screen">
       <div className="flex flex-wrap gap-10 justify-center p-8">
-        {animes.map((anim) => (
-          <CardPreview
-            key={anim.mal_id}
-            {...anim}
-          />
-        ))}
+        {loading
+          ? Array(10)
+            .fill(0)
+            .map((_, i) => <CardSkeleton key={i} />)
+          : animes.map((anim) => <CardPreview key={anim.mal_id} {...anim} />)}
       </div>
     </div>
   );
+
 }
