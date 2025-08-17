@@ -38,12 +38,12 @@ export function CardPreview({ mal_id, title, score, type, aired, images }: CardP
 
             <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2">
                 <div className="flex w-full justify-between mb-1">
-                    <div className="bg-gray-900 flex max-w-[75px] w-full px-3 py-0 rounded-full items-center justify-center text-xs font-semibold text-center">
+                    <div className="bg-gray-900 flex max-w-[75px] w-full px-3 rounded-full items-center justify-center text-xs font-semibold text-center">
                         <span className="text-grayBrand-500">{type}</span>
                     </div>
                     <button
                         onClick={() => setFavorito(!favorito)}
-                        className="bg-grayBrand-900 p-2.5 flex rounded-full items-center justify-center"
+                        className="bg-grayBrand-900 p-2 flex rounded-full items-center justify-center"
                     >
                         <Heart
                             size={18}
