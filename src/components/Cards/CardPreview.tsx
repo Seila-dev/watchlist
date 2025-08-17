@@ -34,38 +34,34 @@ export function CardPreview({ mal_id, title, score, type, aired, images }: CardP
                 className="rounded-2xl"
             />
 
-            {/* Gradiente escuro no rodapé */}
             <div className="absolute bottom-0 left-0 w-full h-36 bg-gradient-to-t from-black to-transparent"></div>
 
             <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2">
-                {/* Tipo e botão de favorito */}
                 <div className="flex w-full justify-between mb-1">
-                    <div className="bg-grayBrand-900 flex px-3 py-1 rounded-full items-center justify-center text-xs font-semibold">
-                        {type}
+                    <div className="bg-gray-900 flex max-w-[75px] w-full px-3 py-0 rounded-full items-center justify-center text-xs font-semibold text-center">
+                        <span className="text-grayBrand-500">{type}</span>
                     </div>
                     <button
                         onClick={() => setFavorito(!favorito)}
-                        className="bg-grayBrand-900 p-1.5 flex rounded-full items-center justify-center"
+                        className="bg-grayBrand-900 p-2.5 flex rounded-full items-center justify-center"
                     >
                         <Heart
-                            size={20}
-                            className={favorito ? "text-purple-500 fill-purple-500" : "text-white"}
+                            size={18}
+                            className={favorito ? "text-purple-500 fill-purple-500" : "text-grayBrand-500"}
                         />
                     </button>
                 </div>
 
-                {/* Título */}
                 <h3 className="font-bold text-lg leading-tight text-white line-clamp-1">
                     {title}
                 </h3>
 
-                {/* Nota e data */}
-                <div className="flex items-center text-xs text-gray-300 font-medium mt-1">
-                    <img src="/star.png" className="h-4 w-4 mr-1" alt="Star" />
-                    <span>{score} / 10</span>
-                    <span className="mx-1 text-gray-500">|</span>
-                    <Clock size={14} className="text-gray-400 mr-1" />
-                    <span>01/08/2025</span>
+                <div className="flex items-center text-[14px] font-medium mt-1">
+                    <img src="/assets/logos/estrelas.webp" className="h-4 w-4 mr-1 -mt-1" alt="Star" />
+                    <span className="text-grayBrand-400" >{score} / 10</span>
+                    <span className="mx-1 text-grayBrand-400">|</span>
+                    <Clock size={14} className="text-grayBrand-400 mr-1 -mt-1" />
+                    <span className="text-grayBrand-400">01/08/2025</span>
                 </div>
             </div>
         </div>
