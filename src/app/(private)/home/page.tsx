@@ -3,8 +3,7 @@
 import { useEffect } from "react";
 import useAnimeApi from "@/hooks/useAnimeApi";
 import { CardSkeleton } from "@/components/Cards/CardSkeleton";
-import Carousel from "@/components/Cards/CardCarousel"; // 👈 importa o carrossel
-import { Library, Popcorn } from "lucide-react";
+import { Popcorn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import CardsCarousel from "@/components/Cards/CardCarousel";

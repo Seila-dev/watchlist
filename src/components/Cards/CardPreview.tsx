@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Clock, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CardData } from "@/types/ApiTypes";
+import starIcon from "@/../public/assets/logos/stars.webp";
 
 function getImageUrl(image_url: string) {
     return image_url || "/assets/default-image.webp";
@@ -58,7 +59,7 @@ export function CardPreview({ title, score, types, aired_from, image_url }: Card
                 {score && (
                     <div className="flex items-center text-[14px] font-medium mt-1">
                         <img
-                            src="/assets/logos/estrelas.webp"
+                            src={starIcon.src}
                             className="h-5 w-5 mr-1 -mt-1"
                             alt="Star"
                         />
