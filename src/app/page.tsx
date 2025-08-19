@@ -56,6 +56,9 @@ export default function Home() {
           <Button asChild variant="outline">
             <Link href="/reset-password">Resetar Senha</Link>
           </Button>
+          <Button asChild variant="outline">
+            <Link href="/home">Home</Link>
+          </Button>
         </div>
         <span className="text-xs text-gray-400 mt-6">
           🔹 Esta é apenas uma página de acesso rápido para desenvolvimento

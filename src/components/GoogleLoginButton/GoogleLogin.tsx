@@ -78,7 +78,13 @@ export function GoogleLoginButton() {
           }
 
           await reloadUser();
-          router.push('/home');
+          
+          if (data.user?.username && data.user.username.trim() !== '') {
+            router.push('/home');
+          } else {
+            router.push('/register/create-username');
+          }
+
           toast.success('Usuário logado com sucesso');
 
         } catch (err) {
@@ -102,7 +108,7 @@ export function GoogleLoginButton() {
     <div className="flex w-full items-center justify-center">
       <button
         onClick={handleGoogleLogin}
-        className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg bg-transparent hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-600 rounded-lg bg-transparent transition-colors duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         type="button"
         disabled={!googleClientId}
       >
@@ -131,7 +137,7 @@ export function GoogleLoginButton() {
           />
         </svg>
         
-        <span className="text-gray-700 font-medium text-base">
+        <span className="text-gray-400 font-medium text-base">
           Continuar com Google
         </span>
       </button>
