@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { CardData } from "@/types/ApiTypes";
 
 function getImageUrl(image_url: string) {
-    return image_url || "/assets/default-image.png";
+    return image_url || "/assets/default-image.webp";
 }
 
 export function CardPreview({ title, score, types, aired_from, image_url }: CardData) {
@@ -21,6 +21,8 @@ export function CardPreview({ title, score, types, aired_from, image_url }: Card
                 alt={title}
                 width={288}
                 height={395}
+                priority
+                quality={100}
                 className="rounded-2xl"
             />
 
@@ -57,13 +59,13 @@ export function CardPreview({ title, score, types, aired_from, image_url }: Card
                     <div className="flex items-center text-[14px] font-medium mt-1">
                         <img
                             src="/assets/logos/estrelas.webp"
-                            className="h-4 w-4 mr-1 -mt-1"
+                            className="h-5 w-5 mr-1 -mt-1"
                             alt="Star"
                         />
                         <span className="text-grayBrand-400">{score} / 10</span>
-                        <span className="mx-1 text-grayBrand-400">|</span>
-                        <Clock size={14} className="text-grayBrand-400 mr-1 -mt-1" />
-                        <span className="text-grayBrand-400">{aired_from ? new Date(aired_from).toLocaleDateString("pt-BR") : "No Date"}</span>
+                        <span className="mx-1  text-grayBrand-400">|</span>
+                        <Clock size={17} className="text-grayBrand-400 mr-1 -mt-0.5" />
+                        <span className="text-grayBrand-400 text-sm ">{aired_from ? new Date(aired_from).toLocaleDateString("pt-BR") : "No Date"}</span>
                     </div>
                 )}
             </div>
