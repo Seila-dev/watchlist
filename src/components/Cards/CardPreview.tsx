@@ -9,12 +9,12 @@ function getImageUrl(image_url: string) {
     return image_url || "/assets/default-image.png";
 }
 
-export function CardPreview({ mal_id, title, score, types, aired_from, image_url }: CardData) {
-    const [favorito, setFavorito] = useState(false);
+export function CardPreview({ title, score, types, aired_from, image_url }: CardData) {
+    const [favorite, setFavorite] = useState<boolean>(false);
 
     return (
         <div
-            className={"relative w-[288px] h-[395px] rounded-2xl overflow-hidden"}
+            className={"relative flex max-w-[288px] max-h-[395px] rounded-2xl"}
         >
             <Image
                 src={getImageUrl(image_url)}
@@ -41,12 +41,12 @@ export function CardPreview({ mal_id, title, score, types, aired_from, image_url
                         </div>
                     )}
                     <button
-                        onClick={() => setFavorito(!favorito)}
+                        onClick={() => setFavorite(!favorite)}
                         className="bg-grayBrand-900 p-2 flex rounded-full items-center justify-center"
                     >
                         <Heart
                             size={18}
-                            className={favorito ? "text-purple-500 fill-purple-500" : "text-grayBrand-500"}
+                            className={favorite ? "text-purple-500 fill-purple-500" : "text-grayBrand-500"}
                         />
                     </button>
                 </div>

@@ -1,8 +1,6 @@
 export function CardSkeleton() {
   return (
     <div className="relative w-[288px] h-[395px] rounded-2xl overflow-hidden bg-gray-700 animate-pulse">
-      
-      <div className="absolute bottom-0 left-0 w-full h-36 bg-gradient-to-t from-gray-700 to-gray-600"></div>
 
       <div className="absolute w-full p-3 bottom-1 left-0 flex flex-col gap-2">
         <div className="flex w-full justify-between mb-1">

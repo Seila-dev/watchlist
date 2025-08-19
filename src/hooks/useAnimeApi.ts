@@ -32,7 +32,7 @@ function normalizeNew(item: DataItem): CardData[] {
 
 export default function useAnimeApi() {
   const [animes, setAnimes] = useState<CardData[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const getTopAnimes = async () => {
     setLoading(true);
