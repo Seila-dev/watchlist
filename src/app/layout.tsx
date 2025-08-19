@@ -1,4 +1,5 @@
 import { BackgroundEclipses } from '@/components/Backgrounds/BackgroundEclipses';
+import { BackgroundTestIphone } from '@/components/Backgrounds/BackgroundTestIphone';
 import './globals.css';
 import ClientAuthProvider from '@/contexts/ClientAuthProvider';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -12,13 +13,13 @@ export const metadata = {
   openGraph: {
     title: "Watchlist - Sua central de entretenimento digital",
     description: "Centralize filmes, séries, livros e animes em um só lugar com Watchlist. Interface intuitiva, progresso sincronizado e controle total da sua privacidade.",
-    url: "https://your-watchlist.vercel.app/",
+    url: "https://your-watchlist.vercel.app",
     siteName: "Watchlist",
     images: [
       {
-        url: "/assets/logos/open-graph-image.webp",
-        width: 1200,
-        height: 630,
+        url: "/assets/logos/openGraph-OnlyLogo.webp",
+        width: 400,
+        height: 400,
         alt: "Watchlist - Organize e acompanhe seu entretenimento",
       },
     ],
@@ -26,11 +27,11 @@ export const metadata = {
     type: "website",
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "Watchlist - Organize e acompanhe seus filmes, séries, livros e animes",
     description:
       "Centralize seu entretenimento digital com Watchlist. Fácil, rápido e seguro.",
-    image: ["/assets/logos/open-graph-image.webp"],
+    image: ["/assets/logos/openGraph-OnlyLogo.webp"],
   },
   robots: "index, follow",
   icons: {
@@ -48,7 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ClientAuthProvider>
             <Toaster />
             <div>
-              <BackgroundEclipses />
+              <BackgroundTestIphone />
               {children}
             </div>
           </ClientAuthProvider>
