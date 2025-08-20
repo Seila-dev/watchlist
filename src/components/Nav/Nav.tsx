@@ -1,21 +1,19 @@
 /**
  * Componente: Home navigation
  * Uso: Exibe as tags de navegação da home
- * Props:
- *  - title: string
- *  - children: React.ReactNode
- * Última alteração: 01/08/2025 por Amanda
+ * Última alteração: 20/08/2025 por Amanda
  */
 
 'use client';
 
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
 import CategoryBar from "./CategoryBar";
 import { MagnifyingGlass } from "phosphor-react";
-import { Plus } from "phosphor-react";
 import { useCategorySearch } from "@/hooks/useCategorySearch";
 import { useState } from "react";
+import { CardPreview } from "../Cards/CardPreview";
+import { contentItemToCardData } from "@/adapters/contentToCard";
+import { CardSkeleton } from "../Cards/CardSkeleton";
+import SearchAutocomplete from "./SearchAutocomplete";
 
 export default function Nav() {
     const [category, setCategory] = useState<string>("Todos");
@@ -25,10 +23,8 @@ export default function Nav() {
 
     return (
         <main>
-            <nav className="mx-auto flex w-full max-w-3xl items-center gap-3">
-                <CategoryBar
-                    onChange={(c) => setCategory(c)}
-                />
+            <nav className="flex justify-between items-center gap-4 mt-6 mb-4 sm:mb-6">
+                <CategoryBar onChange={(c) => setCategory(c)} />
 
                 <div className="relative flex-1 min-w-[290px]">
                     <MagnifyingGlass
@@ -37,43 +33,30 @@ export default function Nav() {
                         className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
                         aria-hidden={true}
                     />
-                    <Input
-                        type="text"
+                    <SearchAutocomplete
+                        category={category}
                         placeholder="Qual conteúdo está procurando?"
-                        onChange={(e) => setQuery(e.target.value)}
-                        className="h-10 w-full pl-9 pr-3 text-neutral-50 bg-gray-900 placeholder:text-gray-500 border-none"
+                        onSelect={(item) => {
+                        }}
                     />
                 </div>
-
-
-                <Button variant="secondary" size="lg" className="text-neutral-50 border border-grayBrand-700">
-                    <Plus weight="bold" />
-                    Adicionar
-                </Button>
             </nav>
 
-                <ul className="mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    {loading && <li className="col-span-full text-zinc-400">Carregando…</li>}
-                    {!loading && data.map(item => (
-                        <li key={`${item.type}-${item.id}`} className="bg-zinc-900/50 rounded-lg overflow-hidden border border-zinc-800">
-                            {item.imageUrl && (
-                                <img src={item.imageUrl} alt={item.title} className="w-full h-40 object-cover" />
-                            )}
-                            <div className="p-3">
-                                <p className="text-sm font-medium line-clamp-2">{item.title}</p>
-                                {item.score != null && (
-                                    <p className="text-xs text-zinc-400 mt-1">Score: {item.score}</p>
-                                )}
-                            </div>
-                        </li>
+            {error && (
+                <p className="mt-3 text-sm text-red-400">
+                    {error || "Não foi possível carregar os itens."}
+                </p>
+            )}
+
+
+            <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {loading
+                    ? Array.from({ length: 10 }).map((_, i) => <CardSkeleton key={i} />)
+                    : data.map((item) => (
+                        <CardPreview key={item.id} {...contentItemToCardData(item)} />
                     ))}
-                </ul>
-
-
+            </section>
         </main>
-
-
-
-
     );
+
 }

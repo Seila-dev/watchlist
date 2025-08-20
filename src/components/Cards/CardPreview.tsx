@@ -2,15 +2,25 @@
 
 import Image from "next/image";
 import { Clock, Heart } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CardData } from "@/types/ApiTypes";
+import { RatingStars } from "../Rating/RatingStars";
+import { useUserRating } from "@/hooks/useUserRating";
+import { AuthContext } from "@/contexts/AuthContext";
 
 function getImageUrl(image_url: string) {
     return image_url || "/assets/default-image.png";
 }
 
+const score10To5 = (s?: number | string | null) =>
+    s == null ? 0 : Math.max(0, Math.min(5, Number(s) / 2));
+
 export function CardPreview({ mal_id, title, score, types, aired_from, image_url }: CardData) {
     const [favorito, setFavorito] = useState(false);
+
+    const { user } = useContext(AuthContext);
+    const userId = user?.id ? String(user.id) : undefined;
+    const userRating = useUserRating((mal_id), userId);
 
     return (
         <div
@@ -52,6 +62,19 @@ export function CardPreview({ mal_id, title, score, types, aired_from, image_url
                 </div>
 
                 <h3 className="font-bold text-lg leading-tight text-white line-clamp-1">{title}</h3>
+
+                <div className="flex items-center gap-2">
+                    <div className="bg-black/60 backdrop-blur-sm rounded-full px-2 py-1 w-fit">
+                        <RatingStars
+                            value={userRating.value}
+                            onChange={userRating.setValue}
+                            step={0.5}
+                            size={18}
+                            className="filter drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)]"
+                            aria-label={`Avaliar ${title}`}
+                        />
+                    </div>
+                </div>
 
                 {score && (
                     <div className="flex items-center text-[14px] font-medium mt-1">

@@ -1,3 +1,10 @@
+/**
+ * Componente: Category Bar
+ * Uso: Exibe as categorias de navegação da home
+ * Props: initial (string), onChange (callback), className (string)
+ * Última alteração: 20/08/2025 por Amanda
+ */
+
 'use client';
 
 import { useState } from 'react';
@@ -20,15 +27,11 @@ function CategoryChip({ label, selected = false, onClick, className }: ChipProps
             type="button"
             onClick={onClick}
             className={cn(
-                // base
                 'px-4 h-9 rounded-full text-sm transition-colors select-none',
                 'border border-transparent',
-                // Default
                 !selected && 'text-grayBrand-500',
-                // Hover (aplica quando não selecionado)
                 !selected && 'bg-gray-900 hover:text-neutral-50',
                 selected && 'bg-gray-900 text-neutral-50 border border-primary-700',
-                // Focus a11y
                 'focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/70',
                 className
             )}
@@ -56,7 +59,7 @@ export default function CategoryBar({
 
     return (
         <nav className={cn('w-full', className)}>
-            <ul className="flex flex-wrap items-center gap-2">
+            <ul className="flex items-center gap-2">
                 {CATEGORIES.map((c) => (
                     <li key={c}>
                         <CategoryChip

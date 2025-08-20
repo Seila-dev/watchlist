@@ -26,14 +26,15 @@ export async function searchJikan( type: JikanType, q: string, signal?: AbortSig
     return (json.data ?? []).map(mapItem(type));
 }
 
-export async function getTopJikan( type: JikanType, signal?: AbortSignal ): Promise<ContentItem[]> {
-    const url = `${BASE}/top/${type}?limit=12`;
+export async function getTopJikan(type: JikanType, page = 1, signal?: AbortSignal): Promise<ContentItem[]> {
+    const url = `${BASE}/${type}/top?page=${page}&limit=12&sfw=true`;
     const response = await fetch(url, { signal, cache: "no-store" });
-        if (!response.ok) throw new Error("Falha na busca");
     
-        const json = await response.json();
+    if (!response.ok) throw new Error("Falha ao buscar dados");
     
-        return (json.data ?? []).map(mapItem(type));
+    const json = await response.json();
+    
+    return (json.data ?? []).map(mapItem(type));
 }
 
 export type { ContentItem };
