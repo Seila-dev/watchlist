@@ -17,7 +17,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="bg-background text-white flex flex-col min-h-screen m-auto gap-8 transation duration-200 w-full">
+    <div className="bg-background text-white flex flex-col min-h-screen m-auto gap-8 transition duration-200 w-full">
       <div className="w-full flex p-8 items-center">
         {loading ? (
           // skeletons
