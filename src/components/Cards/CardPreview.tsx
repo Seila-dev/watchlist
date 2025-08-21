@@ -46,7 +46,7 @@ export function CardPreview({
 
       <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2">
         <div className="flex w-full justify-between mb-1">
-          {types?.length > 0 && (
+          {types.length > 0 && (
             <div className="flex gap-1 flex-wrap">
               {types.map((t, i) => (
                 <div
