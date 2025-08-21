@@ -23,7 +23,7 @@ export default function Nav() {
 
     return (
         <main>
-            <nav className="flex justify-between items-center gap-4 mt-6 mb-4 sm:mb-6">
+            <nav className="flex justify-between items-center px-10 gap-4 mt-6 mb-4 sm:mb-6">
                 <CategoryBar onChange={(c) => setCategory(c)} />
 
                 <div className="relative flex-1 min-w-[290px]">

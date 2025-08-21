@@ -42,9 +42,9 @@ export function CardPreview({
         className="rounded-2xl"
       />
 
-      <div className="absolute bottom-0 left-0 w-full h-36 bg-gradient-to-t from-black to-transparent"></div>
+      <div className="absolute -bottom-1 left-0 w-full h-36 bg-gradient-to-t from-black to-transparent rounded-2xl"></div>
 
-      <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2">
+      <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2 rounded-2xl">
         <div className="flex w-full justify-between mb-1">
           {types && types.length > 0 && (
             <div className="flex gap-1 flex-wrap">
@@ -73,7 +73,9 @@ export function CardPreview({
           {title}
         </h3>
 
-        <div className="flex items-center gap-2">
+        {/*Verificar se é necessário */}
+
+        {/*<div className="flex items-center gap-2">
           <div className="bg-black/60 backdrop-blur-sm rounded-full px-2 py-1 w-fit">
             <RatingStars
               value={userRating.value ?? score10To5(score)}
@@ -84,7 +86,7 @@ export function CardPreview({
               aria-label={`Avaliar ${title}`}
             />
           </div>
-        </div>
+        </div>*/}
 
         {score && (
           <div className="flex items-center text-[14px] font-medium mt-1">

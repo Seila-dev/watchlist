@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import CardsCarousel from "@/components/Cards/CardCarousel";
 
+import Nav from "@/components/Nav/Nav"
+
 export default function Home() {
   const { animes, loading, getTopAnimes } = useAnimeApi();
 
@@ -17,6 +19,9 @@ export default function Home() {
 
   return (
     <main className="bg-background text-white flex flex-col min-h-screen m-auto gap-8 transition duration-200 w-full">
+
+      <Nav />
+
       <div className="w-full flex p-8 items-center">
         {loading ? (
           // skeletons
