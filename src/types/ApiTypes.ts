@@ -4,7 +4,7 @@ export interface CardData {
   mal_id: number;
   title: string;
   score?: string;
-  types?: string[];
+  types?: string[] | null;
   aired_from?: string | null;
   image_url: string;
 }
