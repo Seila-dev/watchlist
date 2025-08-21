@@ -9,7 +9,7 @@ function normalizeOld(anime: AnimesProps): CardData {
     mal_id: anime.mal_id || 0,
     title: anime.title,
     score: anime.score,
-    types: anime.type ? [anime.type] : undefined,
+    types: anime.type ? [anime.type] : null,
     aired_from: anime.aired?.from,
     image_url:
       anime.images?.jpg?.image_url ||
