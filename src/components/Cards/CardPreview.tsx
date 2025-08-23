@@ -31,7 +31,7 @@ export function CardPreview({
   const userRating = useUserRating(mal_id, userId);
 
   return (
-    <div className="relative flex max-w-[288px] max-h-[395px] rounded-2xl">
+    <div className="relative flex w-[288px] h-[395px] rounded-2xl bg-red-500">
       <Image
         src={getImageUrl(image_url)}
         alt={title}
