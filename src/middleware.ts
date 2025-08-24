@@ -19,9 +19,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  //Ajustar para quando tiver username não deixar acessar ('/register/create-username')
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/home/:path*', '/register/create-username'],
+  matcher: ['/home/:path*', '/register/create-username', '/home'],
 };

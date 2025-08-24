@@ -56,7 +56,8 @@ export default function RegisterForm({ email }: RegisterFormProps) {
         email: data.email,
         password: data.password
       })
-      router.push("/register/create-username");
+      //router.push("/register/create-username");
+      router.push(`/reset-password/validate-code?email=${encodeURIComponent(data.email)}`);
     } catch (error: any) {
       if (error.message === "E-mail already exists") {
         methods.setError("email", {

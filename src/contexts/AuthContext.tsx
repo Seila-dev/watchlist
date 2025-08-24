@@ -202,7 +202,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       setUser(response.user);
 
-      toast.success("Conta criada com sucesso! Digite um nome de usuário único agora.");
+      toast.success("Conta criada com sucesso! Confirme seu email!");
 
     } catch (error: any) {
       throw error;
