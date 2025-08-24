@@ -3,5 +3,6 @@ export interface User {
     email: string;
     username: string;
     name: string;
-    content?: string[]; 
+    content?: string[];
+    emailVerify: boolean; 
 }
