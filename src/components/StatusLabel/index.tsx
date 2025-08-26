@@ -2,7 +2,7 @@
 import { Clock, BookmarkSimple, Check } from "phosphor-react";
 
 interface StatusLabelProps {
-  variant?: "watching" | "wantToSee" | "finished";
+  variant?: "watching" | "toWatch" | "finished";
   title?: string;
   length?: number;
   // última atualização: 25/08/2025 - Mauricio Chiapetta
@@ -13,7 +13,7 @@ const variantStyles = {
     bg: "bg-gradient-to-r from-purple-900 to-gray-900",
     icon: <Clock size={25} />,
   },
-  wantToSee: {
+  toWatch: {
     bg: "bg-gradient-to-r from-[#F59E0B] to-gray-900",
     icon: <BookmarkSimple size={25} className="text-yellow-400" />,
   },
