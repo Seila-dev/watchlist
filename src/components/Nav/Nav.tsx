@@ -22,8 +22,8 @@ export default function Nav() {
     const { data, loading, error } = useCategorySearch(category, query);
 
     return (
-        <main>
-            <nav className="flex justify-between items-center gap-4 mt-6 mb-4 sm:mb-6">
+        <>
+            <nav className="flex justify-between items-center w-full gap-4 mt-6 mb-2 px-10 sm:mb-2">
                 <CategoryBar onChange={(c) => setCategory(c)} />
 
                 <div className="relative flex-1 min-w-[290px]">
@@ -56,7 +56,7 @@ export default function Nav() {
                         <CardPreview key={item.id} {...contentItemToCardData(item)} />
                     ))}
             </section>
-        </main>
+        </>
     );
 
 }

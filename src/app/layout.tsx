@@ -48,7 +48,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ClientAuthProvider>
             <Toaster />
             <div>
-              <Background />
               {children}
             </div>
           </ClientAuthProvider>

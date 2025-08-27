@@ -29,7 +29,7 @@ const links = [
 export function Header() {
   return (
     // ta quebrando o layout !!!
-    <header className="bg-gray-900 flex items-center justify-between py-4 px-10 border-b border-gray-800 min-w-full">
+    <header className="bg-background flex items-center justify-between py-4 px-10 border-b border-gray-800 min-w-full">
       <Link href="/">
         <Image src={Logo} alt="Watchlist Logo" width={125} height={24} />
       </Link>
