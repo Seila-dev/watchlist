@@ -39,7 +39,7 @@ export function CardPreview({
         height={395}
         priority
         quality={100}
-        className="rounded-2xl"
+        className="rounded-2xl cursor-pointer"
       />
 
       <div className="absolute -bottom-1 left-0 w-full h-36 bg-gradient-to-t from-black to-transparent rounded-2xl"></div>
@@ -73,13 +73,11 @@ export function CardPreview({
           {title}
         </h3>
 
-        {/*Verificar se é necessário */}
-
         {score && (
           <div className="flex items-center text-[14px] font-medium mt-1">
             <img
               src={starIcon.src}
-              className="h-5 w-5 mr-1 -mt-1"
+              className="h-5 w-5 mr-1"
               alt="Star"
             />
             <span className="text-grayBrand-400">{score} / 10</span>
