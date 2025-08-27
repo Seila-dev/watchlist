@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import Logo from "../../../public/assets/logos/watchlist-logo-white.webp";
+import Logo from "../../../public/assets/logos/watchlist-header-logo.png";
 import Link from "next/link";
 import { ArrowUpRight, Plus } from "lucide-react";
 import { User, Bell } from "phosphor-react";
@@ -36,6 +36,7 @@ export function Header() {
 
       <nav className="flex items-center gap-12 text-gray-400">
         {links.map(({ label, href, icon: Icon }) => (
+          
           <Link
             key={href}
             href={href}
