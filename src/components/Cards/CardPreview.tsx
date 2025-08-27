@@ -31,7 +31,7 @@ export function CardPreview({
   const userRating = useUserRating(mal_id, userId);
 
   return (
-    <div className="relative flex w-[288px] h-[395px] rounded-2xl bg-red-500">
+    <div className="relative flex w-[288px] h-[395px] rounded-2xl">
       <Image
         src={getImageUrl(image_url)}
         alt={title}
@@ -74,19 +74,6 @@ export function CardPreview({
         </h3>
 
         {/*Verificar se é necessário */}
-
-        {/*<div className="flex items-center gap-2">
-          <div className="bg-black/60 backdrop-blur-sm rounded-full px-2 py-1 w-fit">
-            <RatingStars
-              value={userRating.value ?? score10To5(score)}
-              onChange={userRating.setValue}
-              step={0.5}
-              size={18}
-              className="filter drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)]"
-              aria-label={`Avaliar ${title}`}
-            />
-          </div>
-        </div>*/}
 
         {score && (
           <div className="flex items-center text-[14px] font-medium mt-1">
