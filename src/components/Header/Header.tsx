@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import Logo from "../../../public/assets/logos/watchlist-logo-white.webp";
+import Logo from "../../../public/assets/logos/watchlist-header-logo.png";
 import Link from "next/link";
 import { ArrowUpRight, Plus } from "lucide-react";
 import { User, Bell } from "phosphor-react";
@@ -28,7 +28,6 @@ const links = [
 
 export function Header() {
   return (
-    // ta quebrando o layout !!!
     <header className="bg-gray-900 flex items-center justify-between py-4 px-10 border-b border-gray-800 min-w-full">
       <Link href="/">
         <Image src={Logo} alt="Watchlist Logo" width={125} height={24} />
@@ -36,6 +35,7 @@ export function Header() {
 
       <nav className="flex items-center gap-12 text-gray-400">
         {links.map(({ label, href, icon: Icon }) => (
+          
           <Link
             key={href}
             href={href}
