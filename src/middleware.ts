@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
 
-  const token = request.cookies.get('watchlist.token');
+  const token = request.cookies.get('watchlist.token')?.value;
 
   const url = request.nextUrl.clone();
 
@@ -18,8 +18,6 @@ export function middleware(request: NextRequest) {
     url.pathname = '/register';
     return NextResponse.redirect(url);
   }
-
-  //Ajustar para quando tiver username não deixar acessar ('/register/create-username')
 
   return NextResponse.next();
 }
