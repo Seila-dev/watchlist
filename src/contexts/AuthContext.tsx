@@ -96,8 +96,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         router.push(`/reset-password/new-password?email=${encodeURIComponent(payload.email)}&code=${encodeURIComponent(payload.code)}`);
         toast.success("Código confirmado, altere sua senha!");
       } else if (pathname.startsWith("/register/validate-code")) {
-        router.push("/login");
-        toast.success("Código confirmado, realize seu login!");
+        router.push("/register/create-username");
+        toast.success("Código confirmado, crie seu username.");
       } else {
         router.push("/");
         toast.success("Email verificado com sucesso!");
@@ -202,7 +202,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       setUser(response.user);
 
-      toast.success("Conta criada com sucesso! Digite um nome de usuário único agora.");
+      toast.success("Conta criada com sucesso! Confirme seu email!");
 
     } catch (error: any) {
       throw error;

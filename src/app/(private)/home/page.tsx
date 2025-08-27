@@ -7,6 +7,8 @@ import Link from "next/link";
 import CardsCarousel from "@/components/Cards/CardCarousel";
 import { StatusLabel } from "@/components/StatusLabel";
 
+import Nav from "@/components/Nav/Nav"
+
 export default function Home() {
   // Callback para mudanças de filtros (opcional)
   const handleFiltersChange = useCallback((filters: {
@@ -22,9 +24,7 @@ export default function Home() {
 
   return (
     <main className=" text-white flex flex-col min-h-screen m-auto gap-0 transition duration-200 w-full">
-      {/* Glow Effect (Light Bottom) */}
-{/* <div className="pointer-events-none fixed left-1/2 bottom-[1603px] w-[354px] h-[354px] -translate-x-1/2 rounded-full bg-[#4338CA] blur-[500px] z-0"></div> */}
-
+      <Nav />
       
       {/* Carousel Principal - Com todos os filtros */}
       <section className="w-full p-8">

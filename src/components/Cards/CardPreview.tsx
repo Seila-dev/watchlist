@@ -31,7 +31,7 @@ export function CardPreview({
   const userRating = useUserRating(mal_id, userId);
 
   return (
-    <div className="relative flex max-w-[288px] max-h-[395px] rounded-2xl">
+    <div className="relative flex w-[288px] h-[395px] rounded-2xl">
       <Image
         src={getImageUrl(image_url)}
         alt={title}
@@ -42,9 +42,9 @@ export function CardPreview({
         className="rounded-2xl cursor-pointer"
       />
 
-      <div className="absolute bottom-0 left-0 w-full h-36 bg-gradient-to-t from-black to-transparent"></div>
+      <div className="absolute -bottom-1 left-0 w-full h-36 bg-gradient-to-t from-black to-transparent rounded-2xl"></div>
 
-      <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2">
+      <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2 rounded-2xl">
         <div className="flex w-full justify-between mb-1">
           {types && types.length > 0 && (
             <div className="flex gap-1 flex-wrap">
@@ -72,19 +72,6 @@ export function CardPreview({
         <h3 className="font-bold text-lg leading-tight text-white line-clamp-1">
           {title}
         </h3>
-
-        {/* <div className="flex items-center gap-2">
-          <div className="bg-black/60 backdrop-blur-sm rounded-full px-2 py-1 w-fit">
-            <RatingStars
-              value={userRating.value ?? score10To5(score)}
-              onChange={userRating.setValue}
-              step={0.5}
-              size={18}
-              className="filter drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)]"
-              aria-label={`Avaliar ${title}`}
-            />
-          </div>
-        </div> */}
 
         {score && (
           <div className="flex items-center text-[14px] font-medium mt-1">

@@ -1,7 +1,7 @@
 /**
  * Componente: Home navigation
  * Uso: Exibe as tags de navegação da home
- * Última alteração: 20/08/2025 por Amanda
+ * Última alteração: 27/08/2025 por Erick
  */
 
 'use client';
@@ -49,7 +49,7 @@ export default function Nav() {
             )}
 
 
-            <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <section className="grid  grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 w-max mx-auto">
                 {loading
                     ? Array.from({ length: 10 }).map((_, i) => <CardSkeleton key={i} />)
                     : data.map((item) => (
