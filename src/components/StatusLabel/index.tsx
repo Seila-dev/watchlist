@@ -2,23 +2,23 @@
 import { Clock, BookmarkSimple, Check } from "phosphor-react";
 
 interface StatusLabelProps {
-  variant?: "watching" | "toWatch" | "finished";
+  variant?: "watching" | "wantToSee" | "finished";
   title?: string;
   length?: number;
-  // última atualização: 25/08/2025 - Mauricio Chiapetta
 }
 
+// Cores base com opacidade + blur
 const variantStyles = {
   watching: {
-    bg: "bg-gradient-to-r from-secondary-900/20 to-transparent text-primary-200",
-    icon: <Clock size={25} className="text-primary-200"/>,
+    bg: "bg-gradient-to-r from-secondary-900/20 to-transparent text-primary-200",// semitransparente
+    icon: <Clock size={25} className="text-primary-200" />,
   },
-  toWatch: {
-    bg: "bg-gradient-to-r from-[#F59E0B]/20 to-transparent text-primary-200",
+  wantToSee: {
+    bg: "bg-[#F59E0B]/20", // ajustado para escurecer melhor
     icon: <BookmarkSimple size={25} className="text-yellow-400" />,
   },
   finished: {
-    bg: "bg-gradient-to-r from-[#047857] to-transparent text-primary-200",
+    bg: "bg-[#047857]/20", // verde escuro com opacidade
     icon: <Check size={25} className="text-green-500" />,
   },
 };
@@ -32,18 +32,21 @@ export function StatusLabel({
 
   return (
     <div
-      className={`py-2 px-6 flex items-center justify-between rounded-lg ${bg}`}
+      className={`
+        py-3 px-6 mb-5 flex items-center justify-between rounded-lg
+        ${bg} 
+      `}
     >
-      <div className="flex items-center gap-2 text-gray-300">
+      <div className="flex items-center gap-2  ">
         <span>{icon}</span>
-        <span className="font-medium text-primary-200">
+        <span className="status-label-title font-medium ">
           {title}
         </span>
         {length !== undefined && (
           <span className="text-gray-500"> | {length}</span>
         )}
       </div>
-      <button className="text-white hover:underline">Ver todos</button>
+      <button className="text-white text-sm underline">Ver todos</button>
     </div>
   );
 }

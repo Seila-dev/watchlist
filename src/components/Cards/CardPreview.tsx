@@ -39,7 +39,7 @@ export function CardPreview({
         height={395}
         priority
         quality={100}
-        className="rounded-2xl"
+        className="rounded-2xl cursor-pointer"
       />
 
       <div className="absolute bottom-0 left-0 w-full h-36 bg-gradient-to-t from-black to-transparent"></div>
@@ -73,7 +73,7 @@ export function CardPreview({
           {title}
         </h3>
 
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <div className="bg-black/60 backdrop-blur-sm rounded-full px-2 py-1 w-fit">
             <RatingStars
               value={userRating.value ?? score10To5(score)}
@@ -84,13 +84,13 @@ export function CardPreview({
               aria-label={`Avaliar ${title}`}
             />
           </div>
-        </div>
+        </div> */}
 
         {score && (
           <div className="flex items-center text-[14px] font-medium mt-1">
             <img
               src={starIcon.src}
-              className="h-5 w-5 mr-1 -mt-1"
+              className="h-5 w-5 mr-1"
               alt="Star"
             />
             <span className="text-grayBrand-400">{score} / 10</span>
