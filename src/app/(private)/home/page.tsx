@@ -44,7 +44,7 @@ export default function Home() {
         <StatusLabel title="Assistir / Ver" variant="wantToSee" />
         <CardsCarousel
           initialType="anime"
-          initialSortBy="score"
+          initialSortBy="title"
           itemsPerPage={12}
           itemsToScrollPerClick={1}
           showFilters={false}
@@ -55,7 +55,7 @@ export default function Home() {
       <section className="w-full p-8">
         <StatusLabel title="Finalizados" variant="finished" />
         <CardsCarousel
-          initialType="anime"
+          initialType="manga"
           initialSortBy="trending"
           itemsPerPage={10}
           itemsToScrollPerClick={2}

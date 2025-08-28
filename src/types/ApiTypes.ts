@@ -5,6 +5,8 @@ export interface CardData {
   title: string;
   score?: any;
   types?: string[] | null;
+  popularity?: number;
+  members: number;
   aired_from?: string | null;
   image_url: string;
 }

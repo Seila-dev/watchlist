@@ -10,7 +10,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useCategorySearch } from "@/hooks/useCategorySearch";
+// import { useCategorySearch } from "@/hooks/useCategorySearch";
 import type { ContentItem } from "@/types/tagsTypes";
 import clsx from "clsx";
 
@@ -29,7 +29,7 @@ export default function SearchAutocomplete({ category, onSelect, placeholder = "
     const [open, setOpen] = useState(false);
     const [active, setActive] = useState(0);
 
-    const { data, loading } = useCategorySearch(category, query);
+    // const { data, loading } = useCategorySearch(category, query);
     const boxRef = useRef<HTMLDivElement>(null);
     const listRef = useRef<HTMLUListElement>(null);
 
@@ -45,29 +45,29 @@ export default function SearchAutocomplete({ category, onSelect, placeholder = "
         return () => document.removeEventListener("mousedown", onClick);
     }, []);
 
-    function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-        if (!open) return;
-        const max = data.length - 1;
+    // function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    //     if (!open) return;
+    //     const max = data.length - 1;
 
-        if (e.key === "ArrowDown") {
-            e.preventDefault();
-            setActive((i) => (i < max ? i + 1 : 0));
-            listRef.current?.children?.[Math.min(active + 1, max)]?.scrollIntoView({ block: "nearest" });
-        } else if (e.key === "ArrowUp") {
-            e.preventDefault();
-            setActive((i) => (i > 0 ? i - 1 : max));
-            listRef.current?.children?.[Math.max(active - 1, 0)]?.scrollIntoView({ block: "nearest" });
-        } else if (e.key === "Enter") {
-            e.preventDefault();
-            const item = data[active];
-            if (item) {
-                onSelect?.(item);
-                setOpen(false);
-            }
-        } else if (e.key === "Escape") {
-            setOpen(false);
-        }
-    }
+    //     if (e.key === "ArrowDown") {
+    //         e.preventDefault();
+    //         setActive((i) => (i < max ? i + 1 : 0));
+    //         listRef.current?.children?.[Math.min(active + 1, max)]?.scrollIntoView({ block: "nearest" });
+    //     } else if (e.key === "ArrowUp") {
+    //         e.preventDefault();
+    //         setActive((i) => (i > 0 ? i - 1 : max));
+    //         listRef.current?.children?.[Math.max(active - 1, 0)]?.scrollIntoView({ block: "nearest" });
+    //     } else if (e.key === "Enter") {
+    //         e.preventDefault();
+    //         const item = data[active];
+    //         if (item) {
+    //             onSelect?.(item);
+    //             setOpen(false);
+    //         }
+    //     } else if (e.key === "Escape") {
+    //         setOpen(false);
+    //     }
+    // }
 
     return (
         <div
@@ -80,7 +80,7 @@ export default function SearchAutocomplete({ category, onSelect, placeholder = "
                     <Input
                         value={query}
                         onChange={(e) => { setQuery(e.target.value); setActive(0); }}
-                        onKeyDown={onKeyDown}
+                        // onKeyDown={onKeyDown}
                         placeholder={placeholder}
                         className={clsx(
                             "pl-9 h-12 bg-gray-900 border-0 ring-1 ring-gray-800 focus-visible:ring-2 focus-visible:ring-purple-600 text-gray-100 placeholder:text-gray-500 rounded-xl",
@@ -92,15 +92,15 @@ export default function SearchAutocomplete({ category, onSelect, placeholder = "
 
             {open && (
                 <div className="absolute z-50 mt-2 w-full rounded-xl border border-gray-800 bg-gray-900/95 backdrop-blur-sm shadow-xl">
-                    {loading && (
+                    {/* {loading && (
                         <div className="p-4 text-sm text-gray-400">Buscando…</div>
                     )}
 
                     {!loading && query.trim().length >= minChars && data.length === 0 && (
                         <div className="p-4 text-sm text-gray-400">Nenhum resultado.</div>
-                    )}
+                    )} */}
 
-                    {!loading && data.length > 0 && (
+                    {/* {!loading && data.length > 0 && (
                         <ul ref={listRef} className="max-h-72 overflow-auto py-2">
                             {data.slice(0, 8).map((item, i) => (
                                 <li
@@ -132,7 +132,7 @@ export default function SearchAutocomplete({ category, onSelect, placeholder = "
                                 </li>
                             ))}
                         </ul>
-                    )}
+                    )} */}
                 </div>
             )}
         </div>

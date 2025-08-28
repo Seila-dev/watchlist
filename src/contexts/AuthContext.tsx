@@ -264,6 +264,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const data = await res.json();
         setUser(data.user);
 
+
         if (window.location.pathname === '/login') {
           const urlParams = new URLSearchParams(window.location.search);
           const redirectTo = urlParams.get('redirect');
