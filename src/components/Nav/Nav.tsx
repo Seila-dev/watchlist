@@ -1,17 +1,16 @@
 /**
  * Componente: Home navigation
  * Uso: Exibe as tags de navegação da home
- * Última alteração: 27/08/2025 por Erick
+ * Última alteração: 28/08/2025 por Erick
  */
 
 'use client';
 
 import CategoryBar from "./CategoryBar";
 import { MagnifyingGlass } from "phosphor-react";
-import { useCategorySearch } from "@/hooks/useCategorySearch";
+// import { useCategorySearch } from "@/hooks/useCategorySearch";
 import { useState } from "react";
 import { CardPreview } from "../Cards/CardPreview";
-import { contentItemToCardData } from "@/adapters/contentToCard";
 import { CardSkeleton } from "../Cards/CardSkeleton";
 import SearchAutocomplete from "./SearchAutocomplete";
 
@@ -19,7 +18,7 @@ export default function Nav() {
     const [category, setCategory] = useState<string>("Todos");
     const [query, setQuery] = useState<string>("");
 
-    const { data, loading, error } = useCategorySearch(category, query);
+    // const { data, loading, error } = useCategorySearch(category, query);
 
     return (
         <>
@@ -42,7 +41,7 @@ export default function Nav() {
                 </div>
             </nav>
 
-            {error && (
+            {/* {error && (
                 <p className="mt-3 text-sm text-red-400">
                     {error || "Não foi possível carregar os itens."}
                 </p>
@@ -55,7 +54,7 @@ export default function Nav() {
                     : data.map((item) => (
                         <CardPreview key={item.id} {...contentItemToCardData(item)} />
                     ))}
-            </section>
+            </section> */}
         </>
     );
 

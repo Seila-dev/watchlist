@@ -4,8 +4,6 @@ import Image from "next/image";
 import { Clock, Heart } from "lucide-react";
 import { useContext, useState } from "react";
 import { CardData } from "@/types/ApiTypes";
-import { RatingStars } from "../Rating/RatingStars";
-import { useUserRating } from "@/hooks/useUserRating";
 import { AuthContext } from "@/contexts/AuthContext";
 import starIcon from "@/../public/assets/logos/stars.webp";
 
@@ -28,21 +26,20 @@ export function CardPreview({
 
   const { user } = useContext(AuthContext);
   const userId = user?.id ? String(user.id) : undefined;
-  const userRating = useUserRating(mal_id, userId);
 
   return (
-    <div className="relative flex w-[288px] h-[395px] rounded-2xl">
+    <div className="relative flex w-[238px] h-[355px] rounded-2xl">
       <Image
         src={getImageUrl(image_url)}
         alt={title}
-        width={288}
-        height={395}
+        width={238}
+        height={355}
         priority
         quality={100}
         className="rounded-2xl cursor-pointer"
       />
 
-      <div className="absolute -bottom-1 left-0 w-full h-36 bg-gradient-to-t from-black to-transparent rounded-2xl"></div>
+      <div className="absolute -bottom-1 left-0 w-full h-64 bg-gradient-to-t from-black to-transparent rounded-2xl"></div>
 
       <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2 rounded-2xl">
         <div className="flex w-full justify-between mb-1">

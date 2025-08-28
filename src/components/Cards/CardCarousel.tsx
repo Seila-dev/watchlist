@@ -1,18 +1,16 @@
+// components/CardCarousel.tsx
 "use client";
 
 import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { CardPreview } from "@/components/Cards/CardPreview";
-import { searchJikan, getTopJikan } from "@/lib/jikan";
-import { searchTMDB, getTrendingTMDB } from "@/lib/tmdb";
 import { CardData } from "@/types/ApiTypes";
-import type { ContentItem } from "@/types/tagsTypes";
-
-import { canon, contentItemToCardData } from "@/lib/utils";
 import { useCarousel } from "./useCarousel";
 import { CardSkeleton } from "./CarouselSkeleton";
+import apiAnime from "@/services/animeApi";
+import useJikan from "@/hooks/useAnimeApi";
 
-export type ContentType = "anime" | "manga" | "movie" | "tv" | "all";
+export type ContentType = "anime" | "manga" | "all" | "movie" | "tv";
 export type SortBy = "score" | "title" | "popularity" | "trending";
 export type SortOrder = "asc" | "desc";
 
@@ -56,6 +54,8 @@ export default function CardsCarousel({
     search: initialSearch,
   });
 
+  const { getTop, search, recommendations } = useJikan();
+
   // hook de scroll + drag
   const { canScrollLeft, canScrollRight, scrollBy } = useCarousel({
     containerRef: carouselRef as RefObject<HTMLDivElement>,
@@ -63,74 +63,80 @@ export default function CardsCarousel({
     gapPx: 24,
   });
 
-  // busca centralizada com tratamento de falhas por fonte
   const fetchData = useCallback(
     async (searchQuery: string, contentType: ContentType, sortBy: SortBy) => {
       setLoading(true);
       setError(null);
       try {
-        let contentItems: ContentItem[] = [];
+        let contentItems: CardData[] = [];
 
         const q = (searchQuery || "").trim();
-        const c = canon(contentType);
 
         // helper para tentar buscar de uma fonte e ignorar falhas dessa fonte
-        const safeFetch = async (fn: () => Promise<ContentItem[]>) => {
+        const safeFetch = async (fn: () => Promise<CardData[]>) => {
           try {
             const res = await fn();
             if (Array.isArray(res)) contentItems.push(...res);
           } catch (e) {
-            console.warn("Erro em uma fonte:", e);
+            console.warn("Erro em uma fonte Jikan:", e);
           }
         };
 
-        // movies
-        if (contentType === "movie" || (contentType === "all" && !q)) {
-          await safeFetch(() => (q ? searchTMDB("movie", q) : getTrendingTMDB("movie", "week")));
+        // If user filters movie/tv we won't query TMDB — Jikan supports only anime/manga.
+        // We'll show a friendly no-data result for movie/tv, unless 'all' or mapped.
+        const wantAnime = contentType === "anime" || contentType === "all";
+        const wantManga = contentType === "manga" || contentType === "all";
+
+        // If searching, prefer search endpoints; otherwise fetch top + recommendations to mix.
+        if (q) {
+          if (wantAnime) await safeFetch(() => search("anime", q));
+          if (wantManga) await safeFetch(() => search("manga", q));
+        } else {
+          // no query: get top + recommendations (try both but tolerate failures)
+          if (wantAnime) {
+            await safeFetch(() => getTop("anime", 1));
+            await safeFetch(() => recommendations("anime", 1));
+          }
+          if (wantManga) {
+            await safeFetch(() => getTop("manga", 1));
+            await safeFetch(() => recommendations("manga", 1));
+          }
         }
 
-        // tv
-        if (contentType === "tv" || (contentType === "all" && !q)) {
-          await safeFetch(() => (q ? searchTMDB("tv", q) : getTrendingTMDB("tv", "week")));
-        }
-
-        // anime
-        if (contentType === "anime" || (contentType === "all" && !q)) {
-          await safeFetch(() => (q ? searchJikan("anime", q) : getTopJikan("anime", 1)));
-        }
-
-        // manga
-        if (contentType === "manga" || (contentType === "all" && !q)) {
-          await safeFetch(() => (q ? searchJikan("manga", q) : getTopJikan("manga", 1)));
-        }
-
-        // Ordena
+        // Ordena conforme sortBy
         if (sortBy === "score") {
-          contentItems.sort((a, b) => (b.score || 0) - (a.score || 0));
+          contentItems.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
         } else if (sortBy === "title") {
           contentItems.sort((a, b) => a.title.localeCompare(b.title));
+        } else if (sortBy === "popularity") {
+          contentItems.sort((a, b) => (a.popularity ?? 0) - (b.popularity ?? 0));
+          contentItems.reverse();
+        } else if (sortBy === "trending") {
+          // trending: aproximamos por número de membros (se disponível)
+          contentItems.sort((a, b) => (b.members ?? 0) - (a.members ?? 0));
         }
 
         // limita
         const limited = contentItems.slice(0, itemsPerPage);
-        const cardData = limited.map(contentItemToCardData);
-        setCards(cardData);
+
+        setCards(limited);
+
         // reset scroll position (visualmente)
         if (carouselRef.current) {
           carouselRef.current.scrollTo({ left: 0 });
         }
       } catch (err: any) {
-        console.error("Erro geral ao buscar:", err);
-        setError(err?.message || "Erro ao carregar dados");
+        console.error("Erro geral ao buscar (Jikan):", err);
+        setError(err?.message || "Erro ao carregar dados da Jikan");
         setCards([]);
       } finally {
         setLoading(false);
       }
     },
-    [itemsPerPage]
+    [getTop, search, recommendations, itemsPerPage]
   );
 
-  // Debounce manual simples (300ms) para busca quando filtros mudam
+  // Debounce simples (300ms)
   useEffect(() => {
     const t = setTimeout(() => {
       fetchData(filters.search, filters.type as ContentType, filters.sortBy as SortBy);
@@ -150,12 +156,15 @@ export default function CardsCarousel({
   const onClickRight = useCallback(() => scrollBy("right"), [scrollBy]);
 
   const emptyMessage = useMemo(() => {
+    // se o usuário escolheu movie/tv avisamos que não há suporte no Jikan
+    if (filters.type === "movie") return "Filtro 'Filmes' não suportado — Jikan fornece apenas anime e mangá.";
+    if (filters.type === "tv") return "Filtro 'Séries' não suportado — Jikan fornece apenas anime e mangá.";
     if (filters.search) return `Nenhum resultado encontrado para "${filters.search}"`;
     return "Nenhum conteúdo encontrado";
-  }, [filters.search]);
+  }, [filters.search, filters.type]);
 
   return (
-    <div className="w-full space-y-4" >
+    <div className="w-full space-y-4">
       {(title || showFilters) && (
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-4">
           {title && <h2 className="text-2xl font-bold text-white">{title}</h2>}
@@ -171,8 +180,8 @@ export default function CardsCarousel({
                 <option value="all">Todos</option>
                 <option value="anime">Anime</option>
                 <option value="manga">Mangá</option>
-                <option value="movie">Filmes</option>
-                <option value="tv">Séries</option>
+                <option value="movie">Filmes (não suportado)</option>
+                <option value="tv">Séries (não suportado)</option>
               </select>
 
               <select
@@ -223,17 +232,17 @@ export default function CardsCarousel({
         </button>
 
         <div
-  ref={carouselRef}
-  className="flex overflow-x-hidden scroll-smooth gap-6 px-0 max-w-full"
-  style={{
-    scrollbarWidth: "none",
-    msOverflowStyle: "none",
-    WebkitOverflowScrolling: "touch",
-    touchAction: "pan-y" // <- importante: evita que o navegador capture gestos horizontais
-  }}
-  role="list"
-  aria-label={title ?? "Carousel de conteúdo"}
->
+          ref={carouselRef}
+          className="flex overflow-hidden scroll-smooth gap-6 px-0 max-w-full"
+          style={{
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            WebkitOverflowScrolling: "touch",
+            touchAction: "pan-y",
+          }}
+          role="list"
+          aria-label={title ?? "Carousel de conteúdo"}
+        >
           {loading && cards.length === 0 ? (
             <CardSkeleton count={6} />
           ) : (
