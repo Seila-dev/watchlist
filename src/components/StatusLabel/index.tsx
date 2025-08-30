@@ -1,5 +1,6 @@
 "use client";
 import { Clock, BookmarkSimple, Check } from "phosphor-react";
+import React from "react";
 
 interface StatusLabelProps {
   variant?: "watching" | "wantToSee" | "finished";
@@ -7,18 +8,17 @@ interface StatusLabelProps {
   length?: number;
 }
 
-// Cores base com opacidade + blur
 const variantStyles = {
   watching: {
-    bg: "bg-gradient-to-r from-secondary-900/20 to-transparent text-primary-200",// semitransparente
+    bg: "bg-gradient-to-r from-secondary-900/20 to-transparent text-primary-200",
     icon: <Clock size={25} className="text-primary-200" />,
   },
   wantToSee: {
-    bg: "bg-[#F59E0B]/20", // ajustado para escurecer melhor
+    bg: "bg-[#F59E0B]/20",
     icon: <BookmarkSimple size={25} className="text-yellow-400" />,
   },
   finished: {
-    bg: "bg-[#047857]/20", // verde escuro com opacidade
+    bg: "bg-[#047857]/20",
     icon: <Check size={25} className="text-green-500" />,
   },
 };
@@ -33,20 +33,23 @@ export function StatusLabel({
   return (
     <div
       className={`
-        py-3 px-6 mb-5 flex items-center justify-between rounded-lg
+        py-3 px-6 mb-1 sm:mb-5 flex items-center justify-between rounded-lg
         ${bg} 
       `}
     >
-      <div className="flex items-center gap-2  ">
-        <span>{icon}</span>
-        <span className="status-label-title font-medium ">
+      <div className="flex items-center gap-2">
+        <span className="flex items-center justify-center">
+          {React.cloneElement(icon, {
+            size: 18, // celular
+            className: "sm:w-5 sm:h-5 md:w-6 md:h-6 " + icon.props.className,
+          })}
+        </span>
+
+        <span className="status-label-title font-medium text-sm sm:text-base md:text-lg">
           {title}
         </span>
-        {length !== undefined && (
-          <span className="text-gray-500"> | {length}</span>
-        )}
       </div>
-      <button className="text-white text-sm underline">Ver todos</button>
+      <button className="text-white text-xs sm:text-base hover:underline">Ver todos</button>
     </div>
   );
 }

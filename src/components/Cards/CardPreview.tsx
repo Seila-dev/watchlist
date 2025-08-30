@@ -28,7 +28,7 @@ export function CardPreview({
   const userId = user?.id ? String(user.id) : undefined;
 
   return (
-    <div className="relative flex w-[238px] h-[355px] rounded-2xl">
+    <div className="relative flex w-[180px] h-[285px] sm:w-[238px] sm:h-[355px] rounded-2xl select-none cursor-pointer">
       <Image
         src={getImageUrl(image_url)}
         alt={title}
@@ -36,7 +36,7 @@ export function CardPreview({
         height={355}
         priority
         quality={100}
-        className="rounded-2xl cursor-pointer"
+        className="rounded-2xl"
       />
 
       <div className="absolute -bottom-1 left-0 w-full h-64 bg-gradient-to-t from-black to-transparent rounded-2xl"></div>
@@ -48,7 +48,7 @@ export function CardPreview({
               {types.map((t, i) => (
                 <div
                   key={i}
-                  className="bg-gray-900 px-3 rounded-full text-xs font-semibold text-grayBrand-500 flex justify-center items-center text-center w-[70px]"
+                  className="bg-gray-950 px-5 rounded-full text-[8px] md:text-xs font-semibold text-grayBrand-500 flex justify-center items-center text-center"
                 >
                   {t}
                 </div>
@@ -66,21 +66,21 @@ export function CardPreview({
           </button>
         </div>
 
-        <h3 className="font-bold text-lg leading-tight text-white line-clamp-1">
+        <h3 className="font-medium sm:font-bold text-sm sm:text-lg leading-tight text-white line-clamp-1">
           {title}
         </h3>
 
         {score && (
-          <div className="flex items-center text-[14px] font-medium mt-1">
+          <div className="flex items-center text-xs sm:text-sm font-medium mt-0">
             <img
               src={starIcon.src}
               className="h-5 w-5 mr-1"
               alt="Star"
             />
             <span className="text-grayBrand-400">{score} / 10</span>
-            <span className="mx-1 text-grayBrand-400">|</span>
-            <Clock size={17} className="text-grayBrand-400 mr-1 -mt-0.5" />
-            <span className="text-grayBrand-400 text-sm ">
+            <span className="mx-1 text-grayBrand-400 hidden sm:block" >|</span>
+            <Clock size={17} className="text-grayBrand-400 mr-1 hidden sm:block" />
+            <span className="text-grayBrand-400 hidden sm:block ">
               {aired_from
                 ? new Date(aired_from).toLocaleDateString("pt-BR")
                 : "No Date"}
