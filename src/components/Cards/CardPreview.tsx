@@ -37,9 +37,10 @@ export function CardPreview({
         priority
         quality={100}
         className="rounded-2xl"
+        draggable="false"
       />
 
-      <div className="absolute -bottom-1 left-0 w-full h-64 bg-gradient-to-t from-black to-transparent rounded-2xl"></div>
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/95 via-black/60 to-transparent rounded-b-2xl"></div>
 
       <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2 rounded-2xl">
         <div className="flex w-full justify-between mb-1">
@@ -48,7 +49,7 @@ export function CardPreview({
               {types.map((t, i) => (
                 <div
                   key={i}
-                  className="bg-gray-950 px-5 rounded-full text-[8px] md:text-xs font-semibold text-grayBrand-500 flex justify-center items-center text-center"
+                  className="bg-gray-950 px-5 rounded-full text-xs font-semibold text-grayBrand-500 flex justify-center items-center text-center"
                 >
                   {t}
                 </div>
@@ -61,7 +62,7 @@ export function CardPreview({
           >
             <Heart
               size={18}
-              className={favorite ? "text-purple-500 fill-purple-500" : "text-grayBrand-500"}
+              className={favorite ? "text-primary-600 fill-primary-600" : "text-grayBrand-500"}
             />
           </button>
         </div>
