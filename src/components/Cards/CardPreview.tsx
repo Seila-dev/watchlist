@@ -37,9 +37,10 @@ export function CardPreview({
         priority
         quality={100}
         className="rounded-2xl"
+        draggable="false"
       />
 
-      <div className="absolute -bottom-1 left-0 w-full h-64 bg-gradient-to-t from-black to-transparent rounded-2xl"></div>
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/95 via-black/60 to-transparent rounded-b-2xl"></div>
 
       <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2 rounded-2xl">
         <div className="flex w-full justify-between mb-1">
