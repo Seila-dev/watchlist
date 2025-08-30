@@ -161,6 +161,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       setUser(response.user);
 
+      await loadUserFromCookies()
+
       const urlParams = new URLSearchParams(window.location.search);
       const redirectTo = urlParams.get('redirect') || redirectURL;
 
@@ -243,6 +245,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
     resetVerification();
     router.push("/login");
+    router.refresh()
   }, [router]);
 
   const loadUserFromCookies = async () => {
