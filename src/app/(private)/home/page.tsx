@@ -27,7 +27,7 @@ export default function Home() {
       <Nav />
       
       {/* Carousel Principal - Com todos os filtros */}
-      <section className="w-full p-3 sm:p-10">
+      <section className="w-full p-3 sm:px-10">
         <StatusLabel title="Assistindo / Lendo" length={8} variant="watching" />
         <CardsCarousel
           initialType="all"
@@ -40,8 +40,8 @@ export default function Home() {
       </section>
 
       {/* Carousel de Animes Populares - Sem filtros */}
-      <section className="w-full p-3">
-        <StatusLabel title="Assistir / Ver" variant="wantToSee" />
+      <section className="w-full p-3 sm:px-10">
+        <StatusLabel title="Assistir / Ver" length={19} variant="toWatch" />
         <CardsCarousel
           initialType="anime"
           initialSortBy="title"
@@ -52,8 +52,8 @@ export default function Home() {
       </section>
 
       {/* Carousel de Filmes em Alta */}
-      <section className="w-full p-3">
-        <StatusLabel title="Finalizados" variant="finished" />
+      <section className="w-full p-3 sm:px-10">
+        <StatusLabel title="Finalizados" length={395} variant="finished" />
         <CardsCarousel
           initialType="manga"
           initialSortBy="trending"

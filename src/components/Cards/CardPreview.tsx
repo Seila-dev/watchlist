@@ -49,7 +49,7 @@ export function CardPreview({
               {types.map((t, i) => (
                 <div
                   key={i}
-                  className="bg-gray-950 px-5 rounded-full text-[8px] md:text-xs font-semibold text-grayBrand-500 flex justify-center items-center text-center"
+                  className="bg-gray-950 px-5 rounded-full text-xs font-semibold text-grayBrand-500 flex justify-center items-center text-center"
                 >
                   {t}
                 </div>
@@ -62,7 +62,7 @@ export function CardPreview({
           >
             <Heart
               size={18}
-              className={favorite ? "text-purple-500 fill-purple-500" : "text-grayBrand-500"}
+              className={favorite ? "text-primary-600 fill-primary-600" : "text-grayBrand-500"}
             />
           </button>
         </div>

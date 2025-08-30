@@ -3,7 +3,7 @@ import { Clock, BookmarkSimple, Check } from "phosphor-react";
 import React from "react";
 
 interface StatusLabelProps {
-  variant?: "watching" | "wantToSee" | "finished";
+  variant?: "watching" | "toWatch" | "finished";
   title?: string;
   length?: number;
 }
@@ -13,7 +13,7 @@ const variantStyles = {
     bg: "bg-gradient-to-r from-secondary-900/20 to-transparent text-primary-200",
     icon: <Clock size={25} className="text-primary-200" />,
   },
-  wantToSee: {
+  toWatch: {
     bg: "bg-[#F59E0B]/20",
     icon: <BookmarkSimple size={25} className="text-yellow-400" />,
   },
@@ -33,7 +33,7 @@ export function StatusLabel({
   return (
     <div
       className={`
-        py-3 px-6 mb-1 sm:mb-5 flex items-center justify-between rounded-lg
+        py-3 px-6 mb-1 flex items-center justify-between rounded-lg
         ${bg} 
       `}
     >
@@ -48,6 +48,9 @@ export function StatusLabel({
         <span className="status-label-title font-medium text-sm sm:text-base md:text-lg">
           {title}
         </span>
+        {length !== undefined && (
+          <span className="text-gray-500 text-sm sm:text-base"> | {length}</span>
+        )}
       </div>
       <button className="text-white text-xs sm:text-base hover:underline">Ver todos</button>
     </div>
