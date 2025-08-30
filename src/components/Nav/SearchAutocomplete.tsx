@@ -72,9 +72,9 @@ export default function SearchAutocomplete({ category, onSelect, placeholder = "
     return (
         <div
             ref={boxRef}
-            className={clsx("relative w-full max-w-[520px]", containerClassName)}
+            className={clsx("relative w-full max-w-[550px] right-0", containerClassName)}
         >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                     <Input
@@ -83,7 +83,7 @@ export default function SearchAutocomplete({ category, onSelect, placeholder = "
                         // onKeyDown={onKeyDown}
                         placeholder={placeholder}
                         className={clsx(
-                            "pl-9 h-12 bg-gray-900 border-0 ring-1 ring-gray-800 focus-visible:ring-2 focus-visible:ring-purple-600 text-gray-100 placeholder:text-gray-500 rounded-xl",
+                            "pl-9 h-5 bg-gray-900 border-0 ring-1 ring-gray-800 focus-visible:ring-2 focus-visible:primary-900 text-gray-100 placeholder:text-gray-500 text-sm",
                             inputClassName
                         )}
                     />

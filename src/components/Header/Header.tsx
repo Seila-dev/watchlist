@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Logo from "../../../public/assets/logos/watchlist-header-logo.png";
 import Link from "next/link";
-import { ArrowUpRight, Plus } from "lucide-react";
+import { ArrowUpRight, Menu, Plus } from "lucide-react";
 import { User, Bell } from "phosphor-react";
 import { Button } from "../ui/button";
 
@@ -28,13 +28,13 @@ const links = [
 
 export function Header() {
   return (
-    // ta quebrando o layout !!!
-    <header className="bg-background flex items-center justify-between py-4 px-10 border-b border-gray-800 min-w-full">
-      <Link href="/">
+    // Concertando responsivo.
+    <header className="bg-background flex items-center justify-between py-4 px-3 sm:px-10 border-b border-gray-800 min-w-full">
+      <Link href="/" className="">
         <Image src={Logo} alt="Watchlist Logo" width={125} height={24} />
       </Link>
 
-      <nav className="flex items-center gap-12 text-gray-400">
+      <nav className="hidden lg:flex items-center gap-12 text-gray-400">
         {links.map(({ label, href, icon: Icon }) => (
           
           <Link
@@ -50,20 +50,28 @@ export function Header() {
 
       <div className="flex items-center gap-4 flex-shrink-0">
         {/* adicionar funcionalidade onClick() no Button */}
-        <Button className="text-white w-[121px]" variant={"default"}>
+        <Button className="text-white hidden sm:flex" variant={"default"}>
           <Plus />
           Adicionar
         </Button>
         <span className="flex items-center gap-3">
           {/* notificações */}
           <Bell
-            size={25}
-            className="text-gray-400 hover:text-white duration-300 cursor-pointer"
+            size={45}
+            opacity={0.8}
+            className="text-gray-400 hover:text-white border border-gray-800 p-3 duration-300 cursor-pointer rounded-md"
           />
           {/* perfil do usuário */}
           <User
+            size={45}
+            opacity={0.8}
+            className="text-gray-400 hover:text-white border border-gray-800 p-3 duration-300 cursor-pointer rounded-md"
+          />
+          {/* Menu burguer */}
+          <Menu
             size={25}
-            className="text-gray-400 hover:text-white duration-300 cursor-pointer"
+            opacity={0.8}
+            className="flex lg:hidden text-gray-400 hover:text-white duration-300 cursor-pointer"
           />
         </span>
       </div>

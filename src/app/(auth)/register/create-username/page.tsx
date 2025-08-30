@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "@/contexts/AuthContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 import {
   Form,
@@ -46,24 +46,15 @@ export default function CreateUsername() {
     router.push("/home")
   }
 
-  //Fazer alguma validação para quando estiver criando nao conseguir acessar mais a url depois de criado, talvez validar se dentro do user logado ja tem username, porq
-  //quando tiver a opção dentro do site para alterar o username vai usar um page -- //update-username  não esta mesma ja criada
+  useEffect(() => {
+    if (user?.username) {
+      router.replace("/home")
+    }
+  }, [user, router])
+
 
   if (user?.username) {
-    return (
-      <div className="flex items-center justify-center w-screen h-screen">
-        <ModalCard
-          title="Não foi possivel prosseguir!"
-          subtitle="Esta rota é somente para criação de cadastros, caso necessite alterar seu username, realize login e altere na plataforma"
-        >
-          <div className="flex items-center justify-center">
-            <Button asChild>
-              <Link href="/login">Voltar para a página de login</Link>
-            </Button>
-          </div>
-        </ModalCard>
-      </div>
-    );
+    return null
   }
 
   return (

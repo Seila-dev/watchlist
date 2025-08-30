@@ -28,7 +28,7 @@ type CreateUsernameParams = {
   username: string;
 }
 
-type authContextType = {
+export type authContextType = {
   isAuthenticated: boolean;
   user: User | null;
   loading: boolean;
