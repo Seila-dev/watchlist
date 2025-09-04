@@ -28,7 +28,7 @@ type CreateUsernameParams = {
   username: string;
 }
 
-type authContextType = {
+export type authContextType = {
   isAuthenticated: boolean;
   user: User | null;
   loading: boolean;
@@ -161,6 +161,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       setUser(response.user);
 
+      await loadUserFromCookies()
+
       const urlParams = new URLSearchParams(window.location.search);
       const redirectTo = urlParams.get('redirect') || redirectURL;
 
@@ -243,6 +245,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
     resetVerification();
     router.push("/login");
+    router.refresh()
   }, [router]);
 
   const loadUserFromCookies = async () => {
@@ -263,6 +266,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
+
 
         if (window.location.pathname === '/login') {
           const urlParams = new URLSearchParams(window.location.search);

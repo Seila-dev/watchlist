@@ -4,8 +4,6 @@ import Image from "next/image";
 import { Clock, Heart } from "lucide-react";
 import { useContext, useState } from "react";
 import { CardData } from "@/types/ApiTypes";
-import { RatingStars } from "../Rating/RatingStars";
-import { useUserRating } from "@/hooks/useUserRating";
 import { AuthContext } from "@/contexts/AuthContext";
 import starIcon from "@/../public/assets/logos/stars.webp";
 
@@ -28,21 +26,21 @@ export function CardPreview({
 
   const { user } = useContext(AuthContext);
   const userId = user?.id ? String(user.id) : undefined;
-  const userRating = useUserRating(mal_id, userId);
 
   return (
-    <div className="relative flex w-[288px] h-[395px] rounded-2xl">
+    <div className="relative flex w-[180px] h-[285px] sm:w-[238px] sm:h-[355px] rounded-2xl select-none cursor-pointer">
       <Image
         src={getImageUrl(image_url)}
         alt={title}
-        width={288}
-        height={395}
+        width={238}
+        height={355}
         priority
         quality={100}
-        className="rounded-2xl cursor-pointer"
+        className="rounded-2xl"
+        draggable="false"
       />
 
-      <div className="absolute -bottom-1 left-0 w-full h-36 bg-gradient-to-t from-black to-transparent rounded-2xl"></div>
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/95 via-black/60 to-transparent rounded-b-2xl"></div>
 
       <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2 rounded-2xl">
         <div className="flex w-full justify-between mb-1">
@@ -51,7 +49,7 @@ export function CardPreview({
               {types.map((t, i) => (
                 <div
                   key={i}
-                  className="bg-gray-900 px-3 rounded-full text-xs font-semibold text-grayBrand-500 flex justify-center items-center text-center w-[70px]"
+                  className="bg-gray-950 px-5 rounded-full text-xs font-semibold text-grayBrand-500 flex justify-center items-center text-center"
                 >
                   {t}
                 </div>
@@ -64,26 +62,26 @@ export function CardPreview({
           >
             <Heart
               size={18}
-              className={favorite ? "text-purple-500 fill-purple-500" : "text-grayBrand-500"}
+              className={favorite ? "text-primary-600 fill-primary-600" : "text-grayBrand-500"}
             />
           </button>
         </div>
 
-        <h3 className="font-bold text-lg leading-tight text-white line-clamp-1">
+        <h3 className="font-medium sm:font-bold text-sm sm:text-lg leading-tight text-white line-clamp-1">
           {title}
         </h3>
 
         {score && (
-          <div className="flex items-center text-[14px] font-medium mt-1">
+          <div className="flex items-center text-xs sm:text-sm font-medium mt-0">
             <img
               src={starIcon.src}
               className="h-5 w-5 mr-1"
               alt="Star"
             />
             <span className="text-grayBrand-400">{score} / 10</span>
-            <span className="mx-1 text-grayBrand-400">|</span>
-            <Clock size={17} className="text-grayBrand-400 mr-1 -mt-0.5" />
-            <span className="text-grayBrand-400 text-sm ">
+            <span className="mx-1 text-grayBrand-400 hidden sm:block" >|</span>
+            <Clock size={17} className="text-grayBrand-400 mr-1 hidden sm:block" />
+            <span className="text-grayBrand-400 hidden sm:block ">
               {aired_from
                 ? new Date(aired_from).toLocaleDateString("pt-BR")
                 : "No Date"}
