@@ -11,7 +11,7 @@ interface UserResponse {
 }
 
 export async function middleware(request: NextRequest) {
-  const token = request.cookies.get('watchlist.token')?.value;
+  const token = request.cookies.get('watchlist.token');
   const url = request.nextUrl.clone();
 
   if (!token && url.pathname.startsWith('/home')) {
