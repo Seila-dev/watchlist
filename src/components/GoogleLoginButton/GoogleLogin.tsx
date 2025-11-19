@@ -7,8 +7,8 @@ import { useContext, useEffect } from 'react';
 import { toast } from 'sonner';
 
 export function GoogleLoginButton() {
-  const router = useRouter();
-  const { reloadUser } = useContext(AuthContext);
+  // const router = useRouter();
+  // const { reloadUser } = useContext(AuthContext);
   const baseURL = process.env.NEXT_PUBLIC_API_URL;
   const cookieName = process.env.NEXT_PUBLIC_COOKIE_NAME || 'watchlist.token';
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
@@ -32,29 +32,40 @@ export function GoogleLoginButton() {
 
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
 
-    // Abre popup para autenticação
     const popup = window.open(
       authUrl,
       'google-login',
       'width=500,height=600,scrollbars=yes,resizable=yes'
     );
 
-    // Monitora o popup para capturar o callback
+    if (!popup) {
+      toast.error('Não foi possível abrir a janela de login. Verifique seu bloqueador de popups.');
+      return;
+    }
+
     const checkClosed = setInterval(() => {
-      if (popup?.closed) {
-        clearInterval(checkClosed);
-        // O popup foi fechado, verificar se houve sucesso via postMessage ou polling
+      try {
+        if (popup.closed) {
+          clearInterval(checkClosed);
+          window.removeEventListener('message', messageListener);
+          toast.error('Login com Google cancelado');
+        }
+      } catch (e) {
+        // cross-origin é ignorável
       }
     }, 1000);
+    
+    const cleanup = () => {
+      clearInterval(checkClosed);
+      try { popup?.close(); } catch {}
+      window.removeEventListener('message', messageListener);
+    };
 
-    // Listener para mensagens do popup (método mais confiável)
     const messageListener = async (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
 
       if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-        clearInterval(checkClosed);
-        popup?.close();
-        window.removeEventListener('message', messageListener);
+        cleanup()
 
         try {
           const res = await fetch(`${baseURL}/auth/google`, {
@@ -65,6 +76,7 @@ export function GoogleLoginButton() {
           });
 
           if (!res.ok) {
+            const err = await res.text().catch(() => '');
             throw new Error('Erro no login com Google');
           }
 
@@ -74,29 +86,31 @@ export function GoogleLoginButton() {
             setCookie(null, cookieName, data.token, {
               maxAge: 60 * 60 * 12, // 12h
               path: '/',
+              sameSite: 'lax',
             });
-          }
-
-          await reloadUser();
-          
-          if (data.user?.username && data.user.username.trim() !== '') {
-            router.push('/home');
           } else {
-            router.push('/register/create-username');
+            throw new Error('Resposta do servidor não contém token.');
           }
 
           toast.success('Usuário logado com sucesso');
 
+          // aguardar o cookie setado
+          await new Promise(resolve => setTimeout(resolve, 100));
+          
+          const redirectTo = (data.user?.username && data.user.username.trim() !== '')
+            ? '/home'
+            : '/register/create-username';
+
+          window.location.href = redirectTo;
+
         } catch (err) {
-          console.error('Erro inesperado:', err);
+          console.error('Erro inesperado no fluxo do google:', err);
           toast.error('Houve um erro inesperado. Tente novamente ou outra forma de login.');
         }
       }
 
       if (event.data.type === 'GOOGLE_AUTH_ERROR') {
-        clearInterval(checkClosed);
-        popup?.close();
-        window.removeEventListener('message', messageListener);
+        cleanup()
         toast.error('Erro no login com Google');
       }
     };
