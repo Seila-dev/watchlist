@@ -33,13 +33,13 @@ export default function LoginPage() {
     mode: 'onBlur'
   })
 
-  const { signIn, reloadUser } = useContext(AuthContext)
+  const { signIn } = useContext(AuthContext)
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit: SubmitHandler<signInUserFormData> = async (data) => {
     try {
       await signIn(data);
-      await reloadUser()
+      // await reloadUser()
     } catch {
       ["email", "password"].forEach((field) =>
         setError(field as keyof signInUserFormData, {
