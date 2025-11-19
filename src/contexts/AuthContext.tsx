@@ -163,12 +163,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       await loadUserFromCookies()
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const redirectTo = urlParams.get('redirect') || redirectURL;
+      await new Promise(resolve => setTimeout(resolve, 100));
 
-      if (redirectTo) {
-        router.push(redirectTo);
-      }
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTo = urlParams.get('redirect') || redirectURL || '/home'; // ANALYSYS
+
+      // if (redirectTo) {
+      //   router.push(redirectTo);
+      // }
+
+      window.location.href = redirectTo;
 
     } catch (error: any) {
       console.error('Something went wrong on sign in', error);
@@ -178,7 +182,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const registerAccount = async ({ email, password, name }: FormDataRegister) => {
     const url = `${baseURL}/users/`;
-
 
     try {
       const request = await fetch(url, {
@@ -230,9 +233,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         throw new Error(error.message || "Erro ao criar username");
       }
 
-      const response = await request.json();
-
       toast.success("Username criado com sucesso, realizando acesso.");
+
+      // const response = await request.json();
+      await loadUserFromCookies();
+      await new Promise(resolve => setTimeout(resolve, 100));
+      window.location.href = '/home';
 
     } catch (error: any) {
       toast.error(error.message || "Erro desconhecido");
@@ -244,9 +250,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     destroyCookie(null, cookieName);
     setUser(null);
     resetVerification();
-    router.push("/login");
-    router.refresh()
-  }, [router]);
+    window.location.href = '/login';
+    // router.push("/login");
+    // router.refresh()
+  // }, [router]);
+  }, []);
 
   const loadUserFromCookies = async () => {
     const token = getClientToken();
@@ -268,19 +276,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(data.user);
 
 
-        if (window.location.pathname === '/login') {
-          const urlParams = new URLSearchParams(window.location.search);
-          const redirectTo = urlParams.get('redirect');
-          if (redirectTo && redirectTo !== '/login') {
-            router.replace(redirectTo);
-          }
-        }
+        // if (window.location.pathname === '/login') {
+        //   const urlParams = new URLSearchParams(window.location.search);
+        //   const redirectTo = urlParams.get('redirect');
+        //   if (redirectTo && redirectTo !== '/login') {
+        //     router.replace(redirectTo);
+        //   }
+        // }
       } else {
         destroyCookie(null, cookieName);
+        setUser(null);
       }
     } catch (err) {
       console.error('Error trying to load user', err);
       destroyCookie(null, cookieName);
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -361,9 +371,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setEmailVerification(p => ({ ...p, isVerifying: false }));
     }
   };
-
-
-
 
   const resendVerificationCode = async () => {
     if (emailVerification.counter > 0 || !emailVerification.email) return;
