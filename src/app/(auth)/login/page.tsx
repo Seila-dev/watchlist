@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation";
 import z from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SubmitHandler, useForm } from "react-hook-form"
@@ -13,6 +12,7 @@ import Link from 'next/link'
 import { GoogleLoginButton } from "@/components/GoogleLoginButton/GoogleLogin";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { LoadingOverlay } from "@/components/Loading/LoadingOverlay";
 
 const signInUserFormSchema = z.object({
   email: z.email("Digite um email válido!"),
@@ -22,7 +22,7 @@ const signInUserFormSchema = z.object({
 type signInUserFormData = z.infer<typeof signInUserFormSchema>;
 
 export default function LoginPage() {
-  
+
   const {
     register,
     handleSubmit,
@@ -34,7 +34,9 @@ export default function LoginPage() {
   })
 
   const { signIn } = useContext(AuthContext)
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
+  // const resetGoogleLoading = () => setGoogleLoading(false);
 
   const onSubmit: SubmitHandler<signInUserFormData> = async (data) => {
     try {
@@ -51,7 +53,10 @@ export default function LoginPage() {
   };
 
   return (
+
     <div className="flex items-center justify-center p-10 sm:p-0 w-screen min-h-screen">
+      {isSubmitting && <LoadingOverlay message="Entrando..." />}
+      {googleLoading && <LoadingOverlay message="Entrando com Google..." />}
       <ModalCard title="Entrar" subtitle="Entre na sua conta Watchlist.">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
@@ -108,7 +113,10 @@ export default function LoginPage() {
         </div>
 
         <div className="w-full flex justify-center">
-            <GoogleLoginButton />
+          <GoogleLoginButton
+            onStartLoading={() => setGoogleLoading(true)}
+            onFinish={() => setGoogleLoading(false)}
+          />
         </div>
 
         <div className="flex items-center justify-between mt-6 gap-4 flex-col sm:flex-row">

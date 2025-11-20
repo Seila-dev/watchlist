@@ -1,12 +1,16 @@
 'use client'
 
-import { AuthContext } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
 import { setCookie } from 'nookies';
-import { useContext, useEffect } from 'react';
 import { toast } from 'sonner';
 
-export function GoogleLoginButton() {
+export function GoogleLoginButton({
+  onStartLoading,
+  onFinish
+}: {
+  onStartLoading?: () => void,
+  onFinish?: () => void
+}) {
+
   // const router = useRouter();
   // const { reloadUser } = useContext(AuthContext);
   const baseURL = process.env.NEXT_PUBLIC_API_URL;
@@ -19,6 +23,8 @@ export function GoogleLoginButton() {
       toast.error('Configuração do Google OAuth não encontrada');
       return;
     }
+
+    onStartLoading?.()
 
     // Parâmetros para a URL de autorização do Google
     const params = new URLSearchParams({
@@ -48,6 +54,7 @@ export function GoogleLoginButton() {
         if (popup.closed) {
           clearInterval(checkClosed);
           window.removeEventListener('message', messageListener);
+          onFinish?.()
           toast.error('Login com Google cancelado');
         }
       } catch (e) {
@@ -105,12 +112,14 @@ export function GoogleLoginButton() {
 
         } catch (err) {
           console.error('Erro inesperado no fluxo do google:', err);
+          onFinish?.()
           toast.error('Houve um erro inesperado. Tente novamente ou outra forma de login.');
         }
       }
 
       if (event.data.type === 'GOOGLE_AUTH_ERROR') {
         cleanup()
+        onFinish?.()
         toast.error('Erro no login com Google');
       }
     };
