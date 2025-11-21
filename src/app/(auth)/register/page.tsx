@@ -10,10 +10,13 @@ import RegisterForm from "@/components/RegisterForm/RegisterForm";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { LoadingOverlay } from "@/components/Loading/LoadingOverlay";
 
 export default function RegisterPage() {
   // const [email, setEmail] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [formLoading, setFormLoading] = useState(false); // usado quando RegisterForm realiza o submit
 
   const emailSchema = z.object({
     email: z.email("Digite um email válido!"),
@@ -27,7 +30,7 @@ export default function RegisterPage() {
     handleSubmit,
     getValues,
     // Não sei se estou fazendo o uso correto do getValues
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(emailSchema),
     defaultValues: {
@@ -41,6 +44,10 @@ export default function RegisterPage() {
 
   return (
     <div className="flex items-center justify-center p-10 sm:p-0 w-screen min-h-screen">
+      {isSubmitting && <LoadingOverlay message="Continuando..." />}
+      {googleLoading && <LoadingOverlay message="Entrando com Google..." />}
+      {formLoading && <LoadingOverlay message="Criando conta..." />}
+
       <ModalCard title="Inscrever-se" subtitle="Crie sua conta Watchlist.">
         {!showForm ? (
           <>
@@ -63,12 +70,19 @@ export default function RegisterPage() {
               <span className="text-sm text-gray-400">Ou</span>
               <div className="flex-grow border-t border-gray-800" />
             </div>
-            <GoogleLoginButton />
+            <GoogleLoginButton
+              onStartLoading={() => setGoogleLoading(true)}
+              onFinish={() => setGoogleLoading(false)}
+            />
           </>
         ) : (
           // Renderiza o formulário se o úsuario tiver preenchido o email
           // getValues para pegar o email do formulário anterior
-          <RegisterForm email={getValues("email")} />
+          <RegisterForm
+            email={getValues("email")}
+            onStartLoading={() => setFormLoading(true)}
+            onFinishLoading={() => setFormLoading(false)}
+          />
         )}
 
         <p className="text-gray-500 text-xs my-8">
