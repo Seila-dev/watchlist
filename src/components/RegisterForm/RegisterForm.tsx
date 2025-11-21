@@ -14,9 +14,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { LoadingOverlay } from "../Loading/LoadingOverlay";
 
 interface RegisterFormProps {
   email?: string;
+  onStartLoading?: () => void;
+  onFinishLoading?: () => void;
 }
 
 const registerSchema = z.object({
@@ -35,7 +38,11 @@ const registerSchema = z.object({
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
-export default function RegisterForm({ email }: RegisterFormProps) {
+export default function RegisterForm({
+  email,
+  onStartLoading,
+  onFinishLoading,
+}: RegisterFormProps) {
   const { registerAccount, signIn } = useContext(AuthContext);
   const router = useRouter();
 
@@ -50,25 +57,36 @@ export default function RegisterForm({ email }: RegisterFormProps) {
   });
 
   const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
+    onStartLoading?.();
+
     try {
       await registerAccount(data);
+
       await signIn({
         email: data.email,
         password: data.password
       })
       router.push(`/register/validate-code?email=${encodeURIComponent(data.email)}`);
-    } catch (error: any) {
-      if (error.message === "E-mail already exists") {
+    }
+    catch (error: any) {
+      if (error?.message === "E-mail already exists" || /already exists/i.test(error?.message)) {
         methods.setError("email", {
           type: "manual",
-          message: "E-mail already exists"
+          message: "Este e-mail já está em uso",
         });
-      } 
+      } else {
+        console.error("Erro no registro:", error);
+        toast.error("Erro ao criar a conta. Tente novamente.");
+      }
+    } finally {
+      onFinishLoading?.();
     }
   };
 
   return (
     <FormProvider {...methods}>
+      {methods.formState.isSubmitting && <LoadingOverlay message="Criando conta..." />}
+
       <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           name="name"
