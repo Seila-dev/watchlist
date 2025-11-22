@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import { Clock, Heart } from "lucide-react";
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { CardData } from "@/types/ApiTypes";
 import { AuthContext } from "@/contexts/AuthContext";
 import starIcon from "@/../public/assets/logos/stars.webp";
+import { makePlaceholderDataUrl } from "@/lib/ImagePlaceholder";
 
-function getImageUrl(image_url: string) {
-  return image_url || "/assets/default-image.webp";
+function getImageUrl(coverUrl: string) {
+  return coverUrl || "/assets/default-image.webp";
 }
 
 const score10To5 = (s?: number | string | null) =>
@@ -20,24 +21,32 @@ export function CardPreview({
   score,
   types,
   aired_from,
-  image_url,
+  coverUrl,
 }: CardData) {
   const [favorite, setFavorite] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   const { user } = useContext(AuthContext);
   const userId = user?.id ? String(user.id) : undefined;
 
+  const placeholder = useMemo(() => makePlaceholderDataUrl(title, types?.[0] ?? ''), [title, types]);
+
+  // src final: remote image unless failed or absent -> placeholder
+  const src = !failed && coverUrl ? coverUrl : placeholder;
+
   return (
-    <div className="relative flex w-[180px] h-[285px] sm:w-[238px] sm:h-[355px] rounded-2xl select-none cursor-pointer">
+    <div className="relative flex w-[180px] h-[285px] sm:w-[238px] sm:h-[355px] rounded-2xl select-none cursor-pointer overflow-hidden">
       <Image
-        src={getImageUrl(image_url)}
+        // src={getImageUrl(image_url)}
+        src={src}
         alt={title}
-        width={238}
-        height={355}
+        fill
         priority
         quality={100}
-        className="rounded-2xl"
+        className="rounded-2xl object-cover"
         draggable="false"
+        onError={() => setFailed(true)}
+         {...(src !== placeholder ? { blurDataURL: placeholder, placeholder: 'blur' as const } : {})}
       />
 
       <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/95 via-black/60 to-transparent rounded-b-2xl"></div>

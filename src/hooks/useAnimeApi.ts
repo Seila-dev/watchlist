@@ -114,14 +114,14 @@ function normalizeItem(item: any): CardData {
     score: item.score ?? item.mean ?? null,
     types: item.type ? [item.type] : null,
     aired_from: item.aired?.from || item.published?.from || null,
-    image_url:
+    coverUrl:
       item.images?.jpg?.image_url ||
       item.images?.webp?.large_image_url ||
       item.images?.webp?.image_url ||
       item.entry?.[0]?.images?.jpg?.image_url ||
       "",
-    popularity: item.popularity ?? null,
-    members: item.members ?? null,
+    // popularity: item.popularity ?? null,
+    // members: item.members ?? null,
   };
 }
 
