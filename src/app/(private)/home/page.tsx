@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo } from "react";
-import { Popcorn } from "lucide-react";
+import { Popcorn, TowerControl } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import ComputerIcon from '@/../public/assets/computer-icon.png'
 import CardsCarousel from "@/components/Cards/CardCarousel";
 import { StatusLabel } from "@/components/StatusLabel";
 
@@ -99,27 +100,76 @@ export default function Home() {
       {!loading && !error && (
         <>
           <section className="w-full p-3 sm:px-10">
-            <StatusLabel title="Assistindo / Lendo" length={watchingCards.length} variant="watching" />
-            <CardsCarousel items={watchingCards} />
+            <StatusLabel
+              title="Assistindo / Lendo"
+              length={watchingCards.length}
+              variant="watching"
+            />
+
+            {watchingCards.length === 0 ? (
+              <div className="w-full flex flex-col items-center justify-center py-20 my-5 text-center gap-3">
+                <img 
+                  src="./assets/computer-icon.png" 
+                  alt="Computer icon" />
+
+                <h3 className="text-lg font-semibold text-gray-500">Nenhum conteúdo em andamento</h3>
+
+                <p className="text-sm text-gray-500 max-w-sm">
+                  <a href="/new" className="underline text-gray-300">Adicione aqui</a> o que estiver assistindo ou lendo para não perder o ponto.
+                </p>
+              </div>
+            ) : (
+              <CardsCarousel items={watchingCards} />
+            )}
+          </section>
+
+
+          <section className="w-full p-3 sm:px-10">
+            <StatusLabel
+              title="Minha lista"
+              length={toWatchCards.length}
+              variant="toWatch"
+            />
+
+            {toWatchCards.length === 0 ? (
+              <div className="w-full flex flex-col items-center justify-center py-20 my-5 text-center gap-3">
+                <img 
+                  src="./assets/opened-box-icon.png" 
+                  alt="Icone caixa aberta" />
+
+                <h3 className="text-lg font-semibold text-gray-500">Sua Lista está Vazia</h3>
+
+                <p className="text-sm text-gray-500 max-w-sm">
+                  <a href="/new" className="underline text-gray-300">Adicione aqui</a> os conteúdos que você deseja começar em breve.
+                </p>
+              </div>
+            ) : (
+              <CardsCarousel items={toWatchCards} />
+            )}
           </section>
 
           <section className="w-full p-3 sm:px-10">
-            <StatusLabel title="Pra assistir" length={toWatchCards.length} variant="toWatch" />
-            <CardsCarousel items={toWatchCards} />
-          </section>
+            <StatusLabel
+              title="Finalizados"
+              length={completedCards.length}
+              variant="finished"
+            />
 
-          <section className="w-full p-3 sm:px-10">
-            {/* <StatusLabel title="Finalizados" length={395} variant="finished" />
-        <CardsCarousel
-          initialType="manga"
-          initialSortBy="trending"
-          itemsPerPage={10}
-        // itemsToScrollPerClick={2}
-        // showFilters={false}
-        /> */}
-            <StatusLabel title="Finalizados" length={completedCards.length} variant="finished" />
-            <CardsCarousel items={completedCards} />
+            {completedCards.length === 0 ? (
+              <div className="w-full flex flex-col items-center justify-center py-20 my-5 text-center gap-3">
+                <img 
+                  src="./assets/notes-icon.png" 
+                  alt="Icone de bloco de anotações" />
 
+                <h3 className="text-lg font-semibold text-gray-500">Finalizou um conteúdo?</h3>
+
+                <p className="text-sm text-gray-500 max-w-sm">
+                  Edite o status para ele aparecer aqui.
+                </p>
+              </div>
+            ) : (
+              <CardsCarousel items={completedCards} />
+            )}
           </section>
         </>
       )}
