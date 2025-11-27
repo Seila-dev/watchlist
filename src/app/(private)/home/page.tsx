@@ -10,8 +10,19 @@ import { StatusLabel } from "@/components/StatusLabel";
 
 import Nav from "@/components/Nav"
 import useContents from "@/hooks/useContents";
-import { Content } from "@/services/ContentService";
+import { Content, ContentCategory, ContentStatus } from "@/types/content";
 import { CardData } from "@/types/ApiTypes";
+
+interface CardItem {
+  id: string;
+  title: string;
+  coverUrl?: string | null;
+  rating?: number | null;
+  category: ContentCategory;
+  createdAt: string;
+  status: ContentStatus;
+  isFavorite?: boolean;
+}
 
 export default function Home() {
   const {
@@ -46,14 +57,16 @@ export default function Home() {
     };
   }, [contents]);
 
-  const convertToCardData = (items: Content[]): CardData[] => {
-    return items.map(item => ({
-      mal_id: parseInt(item.externalId || '0') || 0,
+    const convertToCardData = (items: Content[]) => {
+    return items.map((item) => ({
+      id: item.id,
       title: item.title,
-      score: item.rating || null,
-      types: [item.category],
-      aired_from: item.createdAt || null,
-      coverUrl: item.coverUrl || ''
+      coverUrl: item.coverUrl ?? null,
+      rating: item.rating ?? null,
+      category: item.category,
+      createdAt: item.createdAt,
+      status: item.status,
+      isFavorite: item.isFavorite ?? false,
     }));
   };
 
