@@ -3,14 +3,15 @@
 
 import { useState, useCallback } from 'react';
 import { useApi } from './useApi';
-import ContentService, { 
+import ContentService from '@/services/ContentService';
+import  { 
   Content, 
   ContentStatus, 
   CreateContentDto, 
   UpdateContentDto,
   GetContentsParams,
   ContentVisibility
-} from '@/services/ContentService';
+} from '@/types/content';
 
 interface UseContentsReturn {
   contents: Content[];
