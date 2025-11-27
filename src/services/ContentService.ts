@@ -1,53 +1,7 @@
 // services/contentService.ts
+import { Content, ContentStatus, ContentVisibility, CreateContentDto, GetContentsParams, UpdateContentDto } from '@/types/content';
 import { AxiosInstance } from 'axios';
 
-export type ContentStatus = 'WATCHING' | 'TO_WATCH' | 'FINISHED';
-export type ContentCategory = 'MOVIES' | 'SERIES' | 'ANIMES' | 'BOOKS' | 'MANGAS';
-export type ContentVisibility = 'PUBLIC' | 'PRIVATE' | 'FRIENDSONLY ';
-
-export interface Content {
-    id: string;
-    title: string;
-    category: ContentCategory;
-    status: ContentStatus;
-    visibility: ContentVisibility;
-    tags?: string[];
-    rating?: number;
-    notes?: string;
-    coverUrl?: string;
-    externalId?: string;
-    createdAt: string;
-    updatedAt: string;
-}
-
-export interface CreateContentDto {
-    title: string;
-    category: ContentCategory;
-    status?: ContentStatus;
-    visibility?: ContentVisibility;
-    tags?: string[];
-    rating?: number;
-    notes?: string;
-    coverImage?: string;
-    externalId?: string;
-}
-
-export interface UpdateContentDto {
-    title?: string;
-    status?: ContentStatus;
-    visibility?: ContentVisibility;
-    tags?: string[];
-    rating?: number;
-    notes?: string;
-    coverImage?: string;
-}
-
-export interface GetContentsParams {
-    status?: ContentStatus;
-    category?: ContentCategory;
-    page?: number;
-    limit?: number;
-}
 
 /**
  * Helper para garantir headers corretos em todas as requisições

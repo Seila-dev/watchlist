@@ -5,19 +5,22 @@ import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { CardPreview } from "@/components/Cards/CardPreview";
 import { CardSkeleton } from "@/components/Cards/CarouselSkeleton";
 import { CardData } from "@/types/ApiTypes";
+import { CardItem, Content } from "@/types/content";
 
 interface CardsCarouselProps {
-  items?: CardData[]; // agora recebe os items do backend via props
+  items?: CardItem[]; // agora recebe os items do backend via props
   itemsPerPage?: number;
   title?: string;
+  loading?: boolean;
 }
 
 export default function CardsCarousel({
   items = [],
   itemsPerPage = 15,
   title,
+  loading = false
 }: CardsCarouselProps) {
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   // Scroll drag (simple implementation)
@@ -50,7 +53,7 @@ export default function CardsCarousel({
     carouselRef.current.scrollBy({ left: dir === "left" ? -scrollAmount : scrollAmount, behavior: "smooth" });
   };
 
-  const loading = false; // o Home controla loading global; aqui sempre false para não duplicar lógica
+  // const loading = false; // o Home controla loading global; aqui sempre false para não duplicar lógica
   const cards = items || [];
 
   const emptyMessage = !loading && cards.length === 0 ? "Nenhum conteúdo encontrado" : "";
@@ -80,8 +83,17 @@ export default function CardsCarousel({
             <CardSkeleton count={6} />
           ) : (
             cards.map((item, index) => (
-              <div key={`${item.mal_id ?? item.title}-${index}`} className="flex-shrink-0">
+              <div key={`${item.title}-${index}`} className="flex-shrink-0">
                 <CardPreview {...item} />
+                {/*               <CardPreview
+                  id={item.id}
+                  title={item.title}
+                  coverUrl={item.coverUrl ?? null}
+                  rating={item.rating ?? null}
+                  category={item.category}
+                  createdAt={item.createdAt}
+                  isFavorite={item.isFavorite ?? false}
+                /> */}
               </div>
             ))
           )}
