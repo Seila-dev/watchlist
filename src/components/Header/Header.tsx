@@ -5,19 +5,16 @@ import Link from "next/link";
 import { ArrowUpRight, Menu, Plus } from "lucide-react";
 import { User, Bell } from "phosphor-react";
 import { Button } from "../ui/button";
+import { usePathname } from "next/navigation";
 
 const links = [
   {
-    label: "Ínicio",
-    href: "/",
+    label: "Início",
+    href: "/home",
   },
   {
     label: "Álbum de conteúdos",
     href: "/contents",
-  },
-  {
-    label: "Favoritos",
-    href: "/favorites",
   },
   {
     label: "Comunidade",
@@ -27,6 +24,8 @@ const links = [
 ];
 
 export function Header() {
+  const pathname = usePathname();
+
   return (
     // Concertando responsivo.
     <header className="bg-background flex items-center justify-between py-4 px-3 sm:px-10 border-b border-gray-800 min-w-full">
@@ -40,7 +39,11 @@ export function Header() {
           <Link
             key={href}
             href={href}
-            className="flex items-center hover:text-white duration-300 transition-all gap-2"
+            className={`flex items-center gap-2 duration-300 transition-all
+              ${pathname === href
+                ? "text-white font-semibold"
+                : "text-gray-400 hover:text-white"
+              }`}
           >
             {label}
             {Icon && <Icon size={20} />}

@@ -101,7 +101,7 @@ export default function Home() {
         <>
           <section className="w-full p-3 sm:px-10">
             <StatusLabel
-              title="Assistindo / Lendo"
+              title="Em andamento"
               length={watchingCards.length}
               variant="watching"
             />
