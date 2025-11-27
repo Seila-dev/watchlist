@@ -10,8 +10,8 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
-type Category = 'Todos' | 'Filmes' | 'Séries' | 'Animes' | 'Livros' | 'Mangás';
-const CATEGORIES: Category[] = ['Todos', 'Filmes', 'Séries', 'Animes', 'Livros', 'Mangás'];
+type Category = 'Todos' | 'Favoritos' | 'Filmes' | 'Séries' | 'Animes' | 'Livros' | 'Mangás';
+const CATEGORIES: Category[] = ['Todos', 'Favoritos',  'Filmes', 'Séries', 'Animes', 'Livros', 'Mangás'];
 
 type ChipProps = {
   label: string;

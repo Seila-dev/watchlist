@@ -1,5 +1,5 @@
 "use client";
-import { Clock, BookmarkSimple, Check } from "phosphor-react";
+import { Clock, BookmarkSimple, Check, CaretRight } from "phosphor-react";
 import React from "react";
 
 interface StatusLabelProps {
@@ -52,7 +52,7 @@ export function StatusLabel({
           <span className="text-gray-500 text-sm sm:text-base"> | {length}</span>
         )}
       </div>
-      <button className="text-white text-xs sm:text-base hover:underline">Ver todos</button>
+      <button className="flex justify-center items-center gap-2 text-white text-xs sm:text-base hover:underline">Lista completa <CaretRight /> </button>
     </div>
   );
 }
