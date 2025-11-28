@@ -10,9 +10,9 @@ export default function Home() {
   const { isAuthenticated, user, loading, signOut } = useContext(AuthContext);
 
   // Loga no console sempre que o user mudar
-  useEffect(() => {
-    console.log("📌 Usuário atual no AuthContext:", user);
-  }, [user]);
+  // useEffect(() => {
+  //   console.log("📌 Usuário atual no AuthContext:", user);
+  // }, [user]);
 
   return (
     <main

@@ -1,7 +1,7 @@
 // hooks/useContents.ts
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useApi } from './useApi';
 import ContentService from '@/services/ContentService';
 import  { 
@@ -38,6 +38,8 @@ export default function useContents(): UseContentsReturn {
   const [contents, setContents] = useState<Content[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const snapshotRef = useRef<Content[] | null>(null);
 
   const clearError = useCallback(() => {
     setError(null);
@@ -94,7 +96,7 @@ export default function useContents(): UseContentsReturn {
   }, [api]);
 
   const createContent = useCallback(async (data: CreateContentDto): Promise<Content | null> => {
-    setLoading(true);
+    // setLoading(true);
     setError(null);
     try {
       const newContent = await ContentService.createContent(api, data);
@@ -105,18 +107,22 @@ export default function useContents(): UseContentsReturn {
       setError(errorMsg);
       console.error('Erro ao criar conteúdo:', err);
       return null;
-    } finally {
-      setLoading(false);
     }
+    // } finally {
+    //   setLoading(false);
+    // }
   }, [api]);
 
   const updateContent = useCallback(async (
     id: string, 
     data: UpdateContentDto
   ): Promise<Content | null> => {
-    setLoading(true);
+    // setLoading(true);
     setError(null);
+    snapshotRef.current = null;
+
     try {
+      // snapshotRef.current = [...contents];
       const updated = await ContentService.updateContent(api, id, data);
       setContents(prev => prev.map(c => c.id === id ? updated : c));
       return updated;
@@ -126,7 +132,8 @@ export default function useContents(): UseContentsReturn {
       console.error('Erro ao atualizar conteúdo:', err);
       return null;
     } finally {
-      setLoading(false);
+      // setLoading(false);
+       snapshotRef.current = null;
     }
   }, [api]);
 
@@ -134,8 +141,13 @@ export default function useContents(): UseContentsReturn {
     id: string, 
     status: ContentStatus
   ): Promise<Content | null> => {
-    setLoading(true);
+    // setLoading(true);
     setError(null);
+     snapshotRef.current = null;
+    setContents(prev => {
+      snapshotRef.current = prev;
+      return prev.map(c => c.id === id ? { ...c, status } : c);
+    });
     try {
       const updated = await ContentService.updateContentStatus(api, id, status);
       setContents(prev => prev.map(c => c.id === id ? updated : c));
@@ -146,7 +158,8 @@ export default function useContents(): UseContentsReturn {
       console.error('Erro ao atualizar status:', err);
       return null;
     } finally {
-      setLoading(false);
+      // setLoading(false);
+      snapshotRef.current = null;
     }
   }, [api]);
 
@@ -154,7 +167,7 @@ export default function useContents(): UseContentsReturn {
     id: string, 
     visibility: ContentVisibility
   ): Promise<Content | null> => {
-    setLoading(true);
+    // setLoading(true);
     setError(null);
     try {
       const updated = await ContentService.updateContentVisibility(api, id, visibility);
@@ -165,13 +178,14 @@ export default function useContents(): UseContentsReturn {
       setError(errorMsg);
       console.error('Erro ao atualizar visibilidade:', err);
       return null;
-    } finally {
-      setLoading(false);
     }
+    // } finally {
+    //   setLoading(false);
+    // }
   }, [api]);
 
   const deleteContent = useCallback(async (id: string): Promise<boolean> => {
-    setLoading(true);
+    // setLoading(true);
     setError(null);
     try {
       await ContentService.deleteContent(api, id);
@@ -182,9 +196,10 @@ export default function useContents(): UseContentsReturn {
       setError(errorMsg);
       console.error('Erro ao deletar conteúdo:', err);
       return false;
-    } finally {
-      setLoading(false);
     }
+    // } finally {
+    //   setLoading(false);
+    // }
   }, [api]);
 
   return {

@@ -48,23 +48,26 @@ export default function Home() {
   //     },
   //   })
   // );
+
   const sensors = useSensors(
-  // TouchSensor em primeiro para priorizar touch-important activation rules on mobile
-  useSensor(TouchSensor, {
-    activationConstraint: {
-      // segure ~200–260ms para iniciar drag no mobile (tweak aqui)
-      delay: 220,
-      // tolerância de movimento durante o delay (px)
-      tolerance: 6,
-    },
-  }),
-  // PointerSensor para mouse (desktop)
-  useSensor(PointerSensor, {
-    activationConstraint: {
-      distance: 8,
-    },
-  })
-);
+    // TouchSensor em primeiro para priorizar touch-important activation rules on mobile
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        // segure ~200–260ms para iniciar drag no mobile (tweak aqui)
+        delay: 220,
+        // tolerância de movimento durante o delay (px)
+        tolerance: 6,
+      },
+    }),
+    // PointerSensor para mouse (desktop)
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
+
+  const isAnyUpdating = updatingIds.size > 0;
 
   useEffect(() => {
     fetchContents();
@@ -104,12 +107,19 @@ export default function Home() {
   }, [activeId, watchingCards, toWatchCards, completedCards]);
 
   const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
+    // setActiveId(event.active.id as string);
+    const id = event.active.id as string;
+    // evita iniciar drag se o item está atualizando
+    if (updatingIds.has(id)) {
+      setActiveId(null);
+      return;
+    }
+    setActiveId(id);
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
-    
+
     setActiveId(null);
 
     if (!over) return;
@@ -117,14 +127,13 @@ export default function Home() {
     const activeId = active.id as string;
     const overId = over.id as string;
 
-    // Se dropou sobre uma zona de status diferente
     if (overId === "WATCHING" || overId === "TO_WATCH" || overId === "FINISHED") {
       const currentCard = contents.find((c) => c.id === activeId);
-      
+
       if (currentCard && currentCard.status !== overId) {
         const newStatus = overId as ContentStatus;
-        
-        // ✨ ATUALIZAÇÃO OTIMISTA: Muda localmente ANTES da API
+
+        // Optismtic update
         setContents((prevContents) =>
           prevContents.map((content) =>
             content.id === activeId
@@ -210,7 +219,7 @@ export default function Home() {
                     </p>
                   </div>
                 ) : (
-                  <CardsCarousel 
+                  <CardsCarousel
                     items={watchingCards}
                     updatingIds={updatingIds}
                   />
@@ -240,7 +249,7 @@ export default function Home() {
                     </p>
                   </div>
                 ) : (
-                  <CardsCarousel 
+                  <CardsCarousel
                     items={toWatchCards}
                     updatingIds={updatingIds}
                   />
@@ -263,11 +272,11 @@ export default function Home() {
                       Finalizou um conteúdo?
                     </h3>
                     <p className="text-sm text-gray-500 max-w-sm">
-                      Edite o status para ele aparecer aqui.
+                      Arraste seu conteúdo para ele aparecer aqui!
                     </p>
                   </div>
                 ) : (
-                  <CardsCarousel 
+                  <CardsCarousel
                     items={completedCards}
                     updatingIds={updatingIds}
                   />
@@ -286,6 +295,7 @@ export default function Home() {
           </div>
         ) : null}
       </DragOverlay>
+      
     </DndContext>
   );
 }
