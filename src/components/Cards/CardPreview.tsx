@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { Clock, Heart } from "lucide-react";
+import { Clock, GripVertical, Heart } from "lucide-react";
 import { AuthContext } from "@/contexts/AuthContext";
 import starIcon from "@/../public/assets/logos/stars.webp";
 import { makePlaceholderDataUrl } from "@/lib/ImagePlaceholder";
 import type { Content } from "@/types/content";
-import { useDraggable } from "@dnd-kit/core";
+import { PointerSensor, TouchSensor, useDraggable, useSensor, useSensors } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 
 type Props = Pick<
@@ -38,6 +38,8 @@ function translateCategory(cat?: string | null): string | null {
   );
 }
 
+
+
 export function CardPreview({
   id,
   title,
@@ -52,9 +54,17 @@ export function CardPreview({
   const [favorite, setFavorite] = useState(Boolean(isFavorite));
   const { user } = useContext(AuthContext);
 
+    const [isTouchDevice, setIsTouchDevice] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const touchDetected =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.maxTouchPoints > 0;
+    setIsTouchDevice(Boolean(touchDetected));
+  }, []);
+
   // Setup do draggable do dnd-kit
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id: id,
+    id
   });
 
   const placeholder = useMemo(
@@ -67,22 +77,41 @@ export function CardPreview({
     rating !== undefined && rating !== null ? `${rating.toFixed(1)} / 10` : null;
 
   // Estilo de transformação do dnd-kit
-  const style = transform
-    ? {
-        transform: CSS.Translate.toString(transform),
-      }
-    : undefined;
+  const transformStyle = transform ? { transform: CSS.Translate.toString(transform) } : undefined;
+  const style = transform ? { transform: CSS.Translate.toString(transform) } : undefined;
 
   return (
     <div
       ref={setNodeRef}
-      style={style}
+            {...(!isTouchDevice ? { ...listeners, ...attributes } : {})}
       {...listeners}
       {...attributes}
-      className={`relative flex w-[180px] h-[285px] sm:w-[238px] sm:h-[355px] rounded-2xl select-none cursor-grab active:cursor-grabbing transition-all duration-300 ${
+      style={{
+        ...transformStyle,
+        touchAction: "auto", // don't block vertical scroll
+        WebkitTouchCallout: "none", // prevent iOS callout on long press
+        WebkitUserSelect: "none",
+        userSelect: "none",
+      }}
+      className={`relative flex w-[180px] h-[285px] sm:w-[238px] sm:h-[355px] rounded-2xl select-none transition-all duration-200 ${
         isDragging ? "opacity-0" : "opacity-100"
       } ${isUpdating ? "ring-2 ring-purple-500 ring-offset-2 ring-offset-black" : ""}`}
     >
+      <button
+    className="absolute top-2 right-2 bg-gray-900 p-2 rounded-full flex items-center justify-center border border-white/10 shadow-lg z-20"
+    style={{
+      touchAction: "none",
+      WebkitTouchCallout: "none",
+      WebkitUserSelect: "none",
+      userSelect: "none",
+    }}
+    onPointerDown={(e) => e.stopPropagation()}
+    aria-label="Arrastar"
+    {...listeners}
+    {...attributes}
+  >
+    <GripVertical size={17} className="text-grayBrand-300" />
+  </button>
       <div
         className="rounded-2xl overflow-hidden w-full h-full"
         style={{
