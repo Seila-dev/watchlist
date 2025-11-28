@@ -98,7 +98,7 @@ export function CardPreview({
       } ${isUpdating ? "ring-2 ring-purple-500 ring-offset-2 ring-offset-black" : ""}`}
     >
       <button
-    className="absolute top-2 right-2 bg-gray-900 p-2 rounded-full flex items-center justify-center border border-white/10 shadow-lg z-20"
+    className="absolute top-2 right-2 bg-gray-900 p-2 rounded-full flex items-center justify-center border border-white/10 shadow-lg z-20 cursor-grabbing"
     style={{
       touchAction: "none",
       WebkitTouchCallout: "none",
