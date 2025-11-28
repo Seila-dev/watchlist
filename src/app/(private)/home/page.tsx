@@ -16,6 +16,7 @@ import {
   DragOverlay,
   DragStartEvent,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -40,13 +41,30 @@ export default function Home() {
   const router = useRouter();
 
   // Configuração dos sensores do dnd-kit
+  // const sensors = useSensors(
+  //   useSensor(PointerSensor, {
+  //     activationConstraint: {
+  //       distance: 8,
+  //     },
+  //   })
+  // );
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    })
-  );
+  // TouchSensor em primeiro para priorizar touch-important activation rules on mobile
+  useSensor(TouchSensor, {
+    activationConstraint: {
+      // segure ~200–260ms para iniciar drag no mobile (tweak aqui)
+      delay: 220,
+      // tolerância de movimento durante o delay (px)
+      tolerance: 6,
+    },
+  }),
+  // PointerSensor para mouse (desktop)
+  useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 8,
+    },
+  })
+);
 
   useEffect(() => {
     fetchContents();

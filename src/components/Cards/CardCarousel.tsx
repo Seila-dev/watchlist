@@ -80,7 +80,7 @@ export default function CardsCarousel({
           onMouseUp={handleMouseLeaveOrUp}
           onMouseMove={handleMouseMove}
           className="flex overflow-x-auto scroll-smooth gap-6 px-2 py-4 scrollbar-none min-h-[320px] sm:min-h-[380px]"
-          style={{ WebkitOverflowScrolling: "touch" }}
+          style={{ WebkitOverflowScrolling: "touch", touchAction: "auto" }}
         >
           {loading && cards.length === 0 ? (
             <CardSkeleton count={6} />
