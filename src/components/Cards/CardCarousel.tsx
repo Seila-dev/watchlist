@@ -4,26 +4,26 @@ import React, { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { CardPreview } from "@/components/Cards/CardPreview";
 import { CardSkeleton } from "@/components/Cards/CarouselSkeleton";
-import { CardData } from "@/types/ApiTypes";
-import { CardItem, Content } from "@/types/content";
-
+import { CardItem } from "@/types/content";
 interface CardsCarouselProps {
-  items?: CardItem[]; // agora recebe os items do backend via props
+  items?: CardItem[];
   itemsPerPage?: number;
   title?: string;
   loading?: boolean;
+  updatingIds?: Set<string>; // IDs dos cards sendo atualizados
 }
 
 export default function CardsCarousel({
   items = [],
   itemsPerPage = 15,
   title,
-  loading = false
+  loading = false,
+  updatingIds = new Set(),
 }: CardsCarouselProps) {
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  // Scroll drag (simple implementation)
+  // Scroll drag (implementação simples)
   let isDown = false;
   let startX = 0;
   let scrollLeft = 0;
@@ -35,10 +35,12 @@ export default function CardsCarousel({
     startX = e.pageX - carouselRef.current.offsetLeft;
     scrollLeft = carouselRef.current.scrollLeft;
   };
+
   const handleMouseLeaveOrUp = () => {
     isDown = false;
     setIsDragging(false);
   };
+
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDown || !carouselRef.current) return;
     e.preventDefault();
@@ -50,12 +52,13 @@ export default function CardsCarousel({
   const handleScroll = (dir: "left" | "right") => {
     if (!carouselRef.current) return;
     const scrollAmount = 350;
-    carouselRef.current.scrollBy({ left: dir === "left" ? -scrollAmount : scrollAmount, behavior: "smooth" });
+    carouselRef.current.scrollBy({
+      left: dir === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
   };
 
-  // const loading = false; // o Home controla loading global; aqui sempre false para não duplicar lógica
   const cards = items || [];
-
   const emptyMessage = !loading && cards.length === 0 ? "Nenhum conteúdo encontrado" : "";
 
   return (
@@ -76,26 +79,34 @@ export default function CardsCarousel({
           onMouseLeave={handleMouseLeaveOrUp}
           onMouseUp={handleMouseLeaveOrUp}
           onMouseMove={handleMouseMove}
-          className="flex overflow-x-auto scroll-smooth gap-6 px-2 py-4 scrollbar-none"
+          className="flex overflow-x-auto scroll-smooth gap-6 px-2 py-4 scrollbar-none min-h-[320px] sm:min-h-[380px]"
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           {loading && cards.length === 0 ? (
             <CardSkeleton count={6} />
           ) : (
-            cards.map((item, index) => (
-              <div key={`${item.title}-${index}`} className="flex-shrink-0">
-                <CardPreview {...item} />
-                {/*               <CardPreview
-                  id={item.id}
-                  title={item.title}
-                  coverUrl={item.coverUrl ?? null}
-                  rating={item.rating ?? null}
-                  category={item.category}
-                  createdAt={item.createdAt}
-                  isFavorite={item.isFavorite ?? false}
-                /> */}
-              </div>
-            ))
+            cards.map((item, index) => {
+              const isUpdating = updatingIds.has(item.id);
+              return (
+                <div
+                  key={`${item.id}-${index}`}
+                  className={`flex-shrink-0 transition-all duration-300 ${
+                    isUpdating ? "animate-pulse" : ""
+                  }`}
+                  style={{ overflow: "visible", position: "relative" }}
+                >
+                  <CardPreview {...item} isUpdating={isUpdating} />
+                  {isUpdating && (
+                    <div className="absolute -top-2 -right-2 z-20">
+                      <div className="bg-purple-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                        <Loader2 className="animate-spin" size={12} />
+                        <span>Salvando...</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })
           )}
 
           {loading && cards.length > 0 && (
@@ -113,7 +124,7 @@ export default function CardsCarousel({
         </button>
       </div>
 
-      {!loading && cards.length === 0 && !emptyMessage.includes('Nenhum conteúdo encontrado') && (
+      {!loading && cards.length === 0 && !emptyMessage.includes("Nenhum conteúdo encontrado") && (
         <div className="flex flex-col items-center justify-center py-12 px-4 text-gray-400">
           <div className="text-4xl mb-3 opacity-50">🔍</div>
           <p>{emptyMessage}</p>
@@ -121,8 +132,13 @@ export default function CardsCarousel({
       )}
 
       <style jsx>{`
-        .scrollbar-none::-webkit-scrollbar { display: none; }
-        .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+        .scrollbar-none::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-none {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
       `}</style>
     </div>
   );
