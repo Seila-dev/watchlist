@@ -54,9 +54,9 @@ export default function Home() {
     useSensor(TouchSensor, {
       activationConstraint: {
         // segure ~200–260ms para iniciar drag no mobile (tweak aqui)
-        delay: 220,
+        delay: 200,
         // tolerância de movimento durante o delay (px)
-        tolerance: 6,
+        tolerance: 8,
       },
     }),
     // PointerSensor para mouse (desktop)
