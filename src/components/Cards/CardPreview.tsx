@@ -1,20 +1,20 @@
 "use client";
 
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import Image from "next/image";
 import { Clock, GripVertical, Heart } from "lucide-react";
 import { AuthContext } from "@/contexts/AuthContext";
 import starIcon from "@/../public/assets/logos/stars.webp";
 import { makePlaceholderDataUrl } from "@/lib/ImagePlaceholder";
 import type { Content } from "@/types/content";
-import { PointerSensor, TouchSensor, useDraggable, useSensor, useSensors } from "@dnd-kit/core";
+import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 
 type Props = Pick<
   Content,
   "id" | "title" | "coverUrl" | "rating" | "category" | "createdAt" | "isFavorite"
 > & {
-  isUpdating?: boolean; // Indica se está salvando no backend
+  isUpdating?: boolean;
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -38,8 +38,6 @@ function translateCategory(cat?: string | null): string | null {
   );
 }
 
-
-
 export function CardPreview({
   id,
   title,
@@ -54,69 +52,59 @@ export function CardPreview({
   const [favorite, setFavorite] = useState(Boolean(isFavorite));
   const { user } = useContext(AuthContext);
 
-    const [isTouchDevice, setIsTouchDevice] = useState(false);
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const touchDetected =
-      "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.maxTouchPoints > 0;
-    setIsTouchDevice(Boolean(touchDetected));
-  }, []);
-
-  // Setup do draggable do dnd-kit
+  // draggable
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id
+    id,
   });
 
-  const placeholder = useMemo(
-    () => makePlaceholderDataUrl(title, category ?? ""),
-    [title, category]
-  );
+  const placeholder = useMemo(() => makePlaceholderDataUrl(title, category ?? ""), [
+    title,
+    category,
+  ]);
   const translatedCategory = translateCategory(category ?? "");
   const src = !failed && coverUrl ? coverUrl : placeholder;
   const ratingLabel =
     rating !== undefined && rating !== null ? `${rating.toFixed(1)} / 10` : null;
 
-  // Estilo de transformação do dnd-kit
   const transformStyle = transform ? { transform: CSS.Translate.toString(transform) } : undefined;
-  const style = transform ? { transform: CSS.Translate.toString(transform) } : undefined;
 
   return (
     <div
       ref={setNodeRef}
-            {...(!isTouchDevice ? { ...listeners, ...attributes } : {})}
       {...listeners}
       {...attributes}
       style={{
         ...transformStyle,
-        touchAction: "auto", // don't block vertical scroll
-        WebkitTouchCallout: "none", // prevent iOS callout on long press
+        // allow vertical page scroll while enabling horizontal drag detection on the card
+        touchAction: "pan-y",
+        WebkitTouchCallout: "none",
         WebkitUserSelect: "none",
         userSelect: "none",
       }}
-      className={`relative flex w-[180px] h-[285px] sm:w-[238px] sm:h-[355px] rounded-2xl select-none transition-all duration-200 ${
+      className={`group relative flex w-[180px] h-[285px] sm:w-[238px] sm:h-[355px] rounded-[20px] select-none transition-all duration-200 border-4 border-transparent border-solid hover:border-primary-700 ${
         isDragging ? "opacity-0" : "opacity-100"
-      } ${isUpdating ? "ring-2 ring-purple-500 ring-offset-2 ring-offset-black" : ""}`}
+      } ${isUpdating ? "ring-2 ring-primary-700 ring-offset-transparent" : ""}`}
     >
+      {/* Grip: only visible on desktop via hover (hidden on mobile) */}
       <button
-    className="absolute top-2 right-2 bg-gray-900 p-2 rounded-full flex items-center justify-center border border-white/10 shadow-lg z-20 cursor-grabbing"
-    style={{
-      touchAction: "none",
-      WebkitTouchCallout: "none",
-      WebkitUserSelect: "none",
-      userSelect: "none",
-    }}
-    onPointerDown={(e) => e.stopPropagation()}
-    aria-label="Arrastar"
-    {...listeners}
-    {...attributes}
-  >
-    <GripVertical size={17} className="text-grayBrand-300" />
-  </button>
+        className="absolute top-2 right-2 bg-gray-900 p-2 rounded-full items-center justify-center border border-white/10 shadow-lg z-20 cursor-grabbing
+                   flex transition-opacity duration-150 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto"
+        style={{
+          touchAction: "none",
+          WebkitTouchCallout: "none",
+          WebkitUserSelect: "none",
+          userSelect: "none",
+        }}
+        onPointerDown={(e) => e.stopPropagation()}
+        aria-label="Arrastar"
+      >
+        <GripVertical size={17} className="text-grayBrand-300" />
+      </button>
+
       <div
-        className="rounded-2xl overflow-hidden w-full h-full"
+        className="border rounded-2xl overflow-hidden w-full h-full"
         style={{
           boxShadow: "0 6px 18px rgba(0,0,0,0.45)",
-          borderRadius: 16,
           background: "linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.02))",
         }}
       >
@@ -126,17 +114,15 @@ export function CardPreview({
           fill
           priority
           quality={100}
-          className="rounded-2xl object-cover"
+          className="rounded-2xl object-cover bg-black"
           draggable={false}
           onError={() => setFailed(true)}
-          {...(src !== placeholder
-            ? { blurDataURL: placeholder, placeholder: "blur" as const }
-            : {})}
+          {...(src !== placeholder ? { blurDataURL: placeholder, placeholder: "blur" as const } : {})}
         />
 
         <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/95 via-black/60 to-transparent rounded-b-2xl" />
 
-        <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2 rounded-2xl">
+        <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2">
           <div className="flex w-full justify-between mb-1">
             {translatedCategory && (
               <div className="bg-gray-900 px-4 py-1 rounded-full text-xs text-grayBrand-500 flex items-center">
@@ -148,14 +134,12 @@ export function CardPreview({
                 ev.stopPropagation();
                 setFavorite((v) => !v);
               }}
-              onPointerDown={(e) => e.stopPropagation()} // Evita conflito com drag
+              onPointerDown={(e) => e.stopPropagation()}
               className="bg-grayBrand-900 p-2 flex rounded-full items-center justify-center"
             >
               <Heart
                 size={18}
-                className={
-                  favorite ? "text-primary-600 fill-primary-600" : "text-grayBrand-500"
-                }
+                className={favorite ? "text-primary-600 fill-primary-600" : "text-grayBrand-500"}
               />
             </button>
           </div>

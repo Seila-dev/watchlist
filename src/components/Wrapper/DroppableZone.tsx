@@ -22,13 +22,13 @@ export function DroppableZone({ id, children, className = "" }: DroppableZonePro
     <div
       ref={setNodeRef}
       className={`relative transition-all duration-200 ${
-        isOver ? "bg-purple-900/10 rounded-xl" : ""
+        isOver ? "bg-primary-900/10 rounded-xl" : ""
       } ${className}`}
     >
       {children}
       
       {isOver && (
-        <div className="absolute inset-0 pointer-events-none border-2 border-dashed border-purple-500 rounded-xl z-10" />
+        <div className="absolute inset-0 pointer-events-none border-2 border-dashed border-primary-500 rounded-xl z-10" />
       )}
     </div>
   );
