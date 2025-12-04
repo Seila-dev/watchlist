@@ -22,6 +22,7 @@ import {
 } from "@dnd-kit/core";
 import { CardPreview } from "@/components/Cards/CardPreview";
 import { useRouter } from "next/navigation";
+import { LoadingOverlay } from "@/components/Loading/LoadingOverlay";
 
 interface CardItem {
   id: string;
@@ -187,12 +188,7 @@ export default function Home() {
         <Nav />
 
         {loading && contents.length === 0 && (
-          <div className="flex items-center justify-center min-h-[60vh]">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent mx-auto mb-4" />
-              <p className="text-gray-400">Carregando seus conteúdos...</p>
-            </div>
-          </div>
+          <LoadingOverlay />
         )}
 
         {!loading && !error && (
