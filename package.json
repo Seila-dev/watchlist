@@ -25,7 +25,11 @@
     "dotenv": "^17.2.1",
     "keen-slider": "^6.8.6",
     "lucide-react": "^0.534.0",
+<<<<<<< HEAD
     "next": "^16.0.8",
+=======
+    "next": "15.3.6",
+>>>>>>> e46ac80f9541d32b4597cc9df1f308fc0dcfb7ff
     "nookies": "^2.5.2",
     "phosphor-react": "^1.4.1",
     "react": "^19.0.0",

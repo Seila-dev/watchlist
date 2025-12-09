@@ -239,7 +239,7 @@ export default function Home() {
                       return (
                         <div
                           key={`${item.id}-${index}`}
-                          className={`flex-shrink-0 transition-all duration-300 ${
+                          className={`shrink-0 transition-all duration-300 ${
                             isUpdating ? "animate-pulse" : ""
                           }`}
                           style={{ overflow: "visible", position: "relative" }}
@@ -287,7 +287,7 @@ export default function Home() {
                       return (
                         <div
                           key={`${item.id}-${index}`}
-                          className={`flex-shrink-0 transition-all duration-300 ${
+                          className={`shrink-0 transition-all duration-300 ${
                             isUpdating ? "animate-pulse" : ""
                           }`}
                           style={{ overflow: "visible", position: "relative" }}
@@ -332,7 +332,7 @@ export default function Home() {
                       return (
                         <div
                           key={`${item.id}-${index}`}
-                          className={`flex-shrink-0 transition-all duration-300 ${
+                          className={`shrink-0 transition-all duration-300 ${
                             isUpdating ? "animate-pulse" : ""
                           }`}
                           style={{ overflow: "visible", position: "relative" }}
