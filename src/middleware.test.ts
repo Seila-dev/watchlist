@@ -1,4 +1,4 @@
-import { middleware } from './middleware';
+import { proxy } from './proxy';
 import { NextResponse } from 'next/server';
 
 jest.mock('next/server', () => {
@@ -48,7 +48,7 @@ describe('middleware', () => {
 
   it('redirects to /login if no token and path starts with /home', async () => {
     const request = createRequest({ url: 'http://localhost/home' });
-    const response = await middleware(request);
+    const response = await proxy(request);
 
     expect(NextResponse.redirect).toHaveBeenCalledWith(
       expect.objectContaining({ pathname: '/login' })
@@ -58,7 +58,7 @@ describe('middleware', () => {
 
   it('redirects to /register if no token and path starts with /register/create-username', async () => {
     const request = createRequest({ url: 'http://localhost/register/create-username' });
-    const response = await middleware(request);
+    const response = await proxy(request);
 
     expect(NextResponse.redirect).toHaveBeenCalledWith(
       expect.objectContaining({ pathname: '/register' })
@@ -69,7 +69,7 @@ describe('middleware', () => {
   it('redirects to /login if token is invalid (fetch not ok)', async () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: false });
     const request = createRequest({ url: 'http://localhost/home', token: 'abc' });
-    const response = await middleware(request);
+    const response = await proxy(request);
 
     expect(NextResponse.redirect).toHaveBeenCalledWith(
       expect.objectContaining({ pathname: '/login' })
@@ -83,7 +83,7 @@ describe('middleware', () => {
       json: async () => ({ user: { username: '' } }),
     });
     const request = createRequest({ url: 'http://localhost/home', token: 'abc' });
-    const response = await middleware(request);
+    const response = await proxy(request);
 
     expect(NextResponse.redirect).toHaveBeenCalledWith(
       expect.objectContaining({ pathname: '/register/create-username' })
@@ -97,7 +97,7 @@ describe('middleware', () => {
       json: async () => ({ user: { username: 'joao' } }),
     });
     const request = createRequest({ url: 'http://localhost/login', token: 'abc' });
-    const response = await middleware(request);
+    const response = await proxy(request);
 
     expect(NextResponse.redirect).toHaveBeenCalledWith(
       expect.objectContaining({ pathname: '/home' })
@@ -111,7 +111,7 @@ describe('middleware', () => {
       json: async () => ({ user: { username: 'joao' } }),
     });
     const request = createRequest({ url: 'http://localhost/home', token: 'abc' });
-    const response = await middleware(request);
+    const response = await proxy(request);
 
     expect(NextResponse.next).toHaveBeenCalled();
     expect(response.type).toBe('next');

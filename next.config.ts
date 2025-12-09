@@ -1,24 +1,23 @@
+// next.config.ts
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   trailingSlash: false,
   images: {
-     domains: [
-      'i.pinimg.com',
-      'imusic.b-cdn.net',
-            'static.wikia.nocookie.net',
-                  'upload.wikimedia.org',
-      // adicione outros domínios das capas que aparecerem na sua API
-    ],
+    // remove "domains" e use somente remotePatterns
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cdn.myanimelist.net",
-      },
-      {
-        protocol: "https",
-        hostname: "image.tmdb.org", 
-      },
+      // antigos domains convertidos para padrões (ajuste pathname se quiser mais restrição)
+      { protocol: "https", hostname: "i.pinimg.com", pathname: "/**" },
+      { protocol: "https", hostname: "imusic.b-cdn.net", pathname: "/**" },
+      { protocol: "https", hostname: "static.wikia.nocookie.net", pathname: "/**" },
+      { protocol: "https", hostname: "upload.wikimedia.org", pathname: "/**" },
+
+      // entradas que você já tinha
+      { protocol: "https", hostname: "cdn.myanimelist.net", pathname: "/**" },
+      { protocol: "https", hostname: "image.tmdb.org", pathname: "/**" },
+
+      // se precisar de subdomínios ou wildcard de hostname, use patterns como:
+      // { protocol: "https", hostname: "**.example-cdn.com", pathname: "/**" },
     ],
   },
 };
