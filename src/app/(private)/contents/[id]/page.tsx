@@ -1,11 +1,7 @@
 // src/app/(private)/contents/[id]/page.tsx
 import ContentDetailClient from "@/components/ContentDetail/index";
 
-interface PageProps {
-  params: { id: string };
-}
-
-export default function Page({ params }: PageProps) {
+export default function Page({ params }: any) {
   const { id } = params;
 
   return (
