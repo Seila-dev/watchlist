@@ -26,8 +26,8 @@ function CategoryChip({ label, selected = false, onClick, className }: ChipProps
       type="button"
       onClick={onClick}
       className={cn(
-        'px-4 h-9 rounded-full text-sm transition-colors select-none whitespace-nowrap',
-        !selected && 'text-grayBrand-500 border border-gray-700 bg-gray-950 hover:text-neutral-50',
+        'px-4 h-8 rounded-full text-sm transition-colors select-none whitespace-nowrap',
+        !selected && 'text-grayBrand-500 border border-gray-800 bg-gray-950 hover:text-neutral-50',
         selected && 'bg-gray-900 text-neutral-50 border border-primary-700',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/70',
         className
