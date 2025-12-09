@@ -81,13 +81,16 @@ export function CardPreview({
         WebkitUserSelect: "none",
         userSelect: "none",
       }}
-      className={`group relative flex w-[180px] h-[285px] sm:w-[238px] sm:h-[355px] rounded-[20px] select-none transition-all duration-200 border-4 border-transparent border-solid hover:border-primary-700 ${
+      // className={`group relative flex w-[180px] h-[285px] sm:w-[238px] sm:h-[355px] rounded-[20px] select-none transition-all duration-200 border-4 border-transparent border-solid hover:border-primary-700 ${
+      //   isDragging ? "opacity-0" : "opacity-100"
+      // } ${isUpdating ? "ring-2 ring-primary-700 ring-offset-transparent" : ""}`}
+        className={`group relative flex w-[180px] h-[285px] sm:w-[316px] sm:h-[425px] rounded-[20px] select-none transition-all duration-200 border-4 border-transparent border-solid hover:border-primary-700 ${
         isDragging ? "opacity-0" : "opacity-100"
       } ${isUpdating ? "ring-2 ring-primary-700 ring-offset-transparent" : ""}`}
     >
       {/* Grip: only visible on desktop via hover (hidden on mobile) */}
       <button
-        className="absolute top-2 right-2 bg-gray-900 p-2 rounded-full items-center justify-center border border-white/10 shadow-lg z-20 cursor-grabbing
+        className="absolute top-2 right-2 bg-gray-900 p-2 rounded-full items-center justify-center border border-white/10 shadow-lg z-20
                    flex transition-opacity duration-150 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto"
         style={{
           touchAction: "none",
@@ -120,7 +123,8 @@ export function CardPreview({
           {...(src !== placeholder ? { blurDataURL: placeholder, placeholder: "blur" as const } : {})}
         />
 
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/95 via-black/60 to-transparent rounded-b-2xl" />
+        {/* <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/95 via-black/60 to-transparent rounded-b-2xl" /> */}
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/100 via-black/85 to-transparent rounded-b-2xl" />
 
         <div className="absolute w-full p-3 bottom-1 left-0 text-white z-10 flex flex-col gap-2">
           <div className="flex w-full justify-between mb-1">
@@ -152,11 +156,6 @@ export function CardPreview({
             <div className="flex items-center text-xs sm:text-sm font-medium mt-0">
               <img src={starIcon.src} className="h-5 w-5 mr-1" alt="Star" />
               <span className="text-grayBrand-400">{ratingLabel}</span>
-              <span className="mx-1 text-grayBrand-400 hidden sm:block">|</span>
-              <Clock size={17} className="text-grayBrand-400 mr-1 hidden sm:block" />
-              <span className="text-grayBrand-400 hidden sm:block">
-                {createdAt ? new Date(createdAt).toLocaleDateString("pt-BR") : "—"}
-              </span>
             </div>
           )}
         </div>
