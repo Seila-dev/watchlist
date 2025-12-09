@@ -1,27 +1,17 @@
-"use client"
-import useContents from "@/hooks/useContents";
-import { useEffect } from "react";
+// src/app/(private)/contents/[id]/page.tsx
+import ContentDetailClient from "@/components/ContentDetail/index";
 
-// Este é um Server Component por padrão no App Router
-export default function Page({ params }: { params: { idParams: string } }) {
-  // params.slug conterá o valor dinâmico da URL (ex: "post-1")
-  const { idParams } = params; 
-  const { contents, fetchContentById } = useContents()
+interface PageProps {
+  params: { id: string };
+}
 
-  useEffect(() => {
-    fetchContentById(idParams)
-  })
-
-  const found = contents.find(content => content.id === idParams)
-
-  console.log(found)
-   
-  // Aqui você pode buscar os dados do seu conteúdo usando o slug
-  // const postData = await fetchPostBySlug(slug);
+export default function Page({ params }: PageProps) {
+  const { id } = params;
 
   return (
     <div>
-      <h1>Página do Post: {idParams}</h1>
+      {/* Passa o id pro componente cliente que faz o fetch */}
+      <ContentDetailClient id={id} />
     </div>
   );
 }
