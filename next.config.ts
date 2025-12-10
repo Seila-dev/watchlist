@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "imusic.b-cdn.net", pathname: "/**" },
       { protocol: "https", hostname: "static.wikia.nocookie.net", pathname: "/**" },
       { protocol: "https", hostname: "upload.wikimedia.org", pathname: "/**" },
+      { protocol: "https", hostname: "external-preview.redd.it", pathname: "/**" },
+      { protocol: "https", hostname: "m.media-amazon.com", pathname: "/**" },
 
       // entradas que você já tinha
       { protocol: "https", hostname: "cdn.myanimelist.net", pathname: "/**" },

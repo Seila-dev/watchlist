@@ -84,9 +84,8 @@ export function CardPreview({
       // className={`group relative flex w-[180px] h-[285px] sm:w-[238px] sm:h-[355px] rounded-[20px] select-none transition-all duration-200 border-4 border-transparent border-solid hover:border-primary-700 ${
       //   isDragging ? "opacity-0" : "opacity-100"
       // } ${isUpdating ? "ring-2 ring-primary-700 ring-offset-transparent" : ""}`}
-        className={`group relative flex w-[180px] h-[285px] sm:w-[316px] sm:h-[425px] rounded-[20px] select-none transition-all duration-200 border-4 border-transparent border-solid hover:border-primary-700 ${
-        isDragging ? "opacity-0" : "opacity-100"
-      } ${isUpdating ? "ring-2 ring-primary-700 ring-offset-transparent" : ""}`}
+      className={`group relative flex w-[180px] h-[285px] sm:w-[316px] sm:h-[425px] rounded-[20px] select-none transition-all duration-200 border-4 border-transparent border-solid hover:border-primary-700 ${isDragging ? "opacity-0" : "opacity-100"
+        } ${isUpdating ? "ring-2 ring-primary-700 ring-offset-transparent" : ""}`}
     >
       {/* Grip: only visible on desktop via hover (hidden on mobile) */}
       <button
@@ -105,7 +104,7 @@ export function CardPreview({
       </button>
 
       <div
-        className="border rounded-2xl overflow-hidden w-full h-full"
+        className="relative rounded-2xl overflow-hidden w-full h-full"
         style={{
           boxShadow: "0 6px 18px rgba(0,0,0,0.45)",
           background: "linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.02))",
@@ -116,7 +115,9 @@ export function CardPreview({
           alt={title}
           fill
           priority
-          quality={100}
+          // quality={100}
+          quality={75}
+          sizes="(max-width: 639px) 180px, 316px"
           className="rounded-2xl object-cover bg-black"
           draggable={false}
           onError={() => setFailed(true)}
@@ -152,12 +153,15 @@ export function CardPreview({
             {title}
           </h3>
 
-          {ratingLabel && (
-            <div className="flex items-center text-xs sm:text-sm font-medium mt-0">
-              <img src={starIcon.src} className="h-5 w-5 mr-1" alt="Star" />
-              <span className="text-grayBrand-400">{ratingLabel}</span>
-            </div>
-          )}
+          <div className="flex items-center text-xs sm:text-sm font-medium mt-0">
+            <img src={starIcon.src} className="h-5 w-5 mr-1" alt="Star" />
+
+            {rating !== null && rating !== undefined && rating > 0 ? (
+              <span className="text-grayBrand-400">{rating.toFixed(1)} / 10</span>
+            ) : (
+              <span className="text-grayBrand-500">Sem avaliação</span>
+            )}
+          </div>
         </div>
       </div>
     </div>
