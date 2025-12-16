@@ -161,11 +161,12 @@ body::-webkit-scrollbar {
   background: transparent;
 }
 body::-webkit-scrollbar-track {
-  background: #e0e7ff; 
+  background: #000; 
 
 }
 body::-webkit-scrollbar-thumb {
-  background-color: #2c2380; 
+  background-color: #1e1f20; 
+  border-radius: 10px;
   transition: background-color 0.3s ease;
 }
 

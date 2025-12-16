@@ -83,6 +83,7 @@ export default function Home() {
       category: item.category,
       createdAt: item.createdAt,
       status: item.status,
+      annotations: item.annotations ?? null,
       isFavorite: item.isFavorite ?? false,
     }));
   };
@@ -367,11 +368,11 @@ export default function Home() {
           margin: 0 16px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #312E81;
+          background: #1e1f20;
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #4F46E5;
+          background: #1e1a5f;
           cursor: pointer;
         }
       `}</style>
