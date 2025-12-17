@@ -24,6 +24,7 @@ export interface Content {
   visibility: ContentVisibility;
   status: ContentStatus;
   rating?: number | null;
+  annotations?: string | null;
   isFavorite?: boolean;
   startedAt?: string | null;   // ISO string from API or null
   finishedAt?: string | null;  // ISO string from API or null

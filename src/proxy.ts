@@ -1,3 +1,4 @@
+// src/proxy.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
@@ -13,7 +14,6 @@ const userCache = new Map<string, { user: UserResponse['user'], timestamp: numbe
 const CACHE_TTL = 30000; // 30 segundos
 
 async function validateUserToken(token: string, baseURL: string): Promise<UserResponse['user'] | null> {
-  // Verifica cache
   const cached = userCache.get(token);
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
     return cached.user;
@@ -25,7 +25,6 @@ async function validateUserToken(token: string, baseURL: string): Promise<UserRe
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      // Adiciona timeout para evitar requisições longas
       signal: AbortSignal.timeout(5000),
     });
 
@@ -35,8 +34,7 @@ async function validateUserToken(token: string, baseURL: string): Promise<UserRe
     }
 
     const data: UserResponse = await response.json();
-    
-    // Atualiza cache
+
     userCache.set(token, {
       user: data.user,
       timestamp: Date.now()
@@ -44,13 +42,13 @@ async function validateUserToken(token: string, baseURL: string): Promise<UserRe
 
     return data.user;
   } catch (error) {
-    console.error('Error validating token in middleware:', error);
+    console.error('Error validating token in proxy:', error);
     userCache.delete(token);
     return null;
   }
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const token = request.cookies.get('watchlist.token');
   const url = request.nextUrl.clone();
   const baseURL = process.env.NEXT_PUBLIC_API_URL;
@@ -79,11 +77,9 @@ export async function middleware(request: NextRequest) {
   if (token) {
     const user = await validateUserToken(token.value, baseURL!);
 
-    // Token inválido ou expirado
     if (!user) {
       const response = NextResponse.redirect(new URL('/login', request.url));
       response.cookies.delete('watchlist.token');
-      // Limpa o cache
       userCache.clear();
       return response;
     }
