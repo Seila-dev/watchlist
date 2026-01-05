@@ -146,6 +146,19 @@ class ContentService {
 
         return response.data;
     }
+
+static async getHomeContents(
+  api: AxiosInstance, 
+  params?: { limit?: number; category?: string }
+) {
+  const config = {
+    ...withAuthHeaders(api),
+    params,
+  };
+
+  const response = await api.get('/contents/home', config);
+  return response.data; // { sliders: { watching, toWatch, finished }, requested }
+}
 }
 
 export default ContentService;

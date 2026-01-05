@@ -36,10 +36,14 @@ interface CardItem {
 }
 
 export default function Home() {
-  const { contents, loading, error, fetchContents, updateStatus, setContents } = useContents();
+  const { contents, loading, error, fetchContents, fetchHomeContents, updateStatus, setContents } = useContents();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [updatingIds, setUpdatingIds] = useState<Set<string>>(new Set());
   const router = useRouter();
+
+    useEffect(() => {
+    fetchHomeContents({ limit: 15 }); // ← Busca 15 por slider
+  }, [fetchHomeContents]);
 
   // Refs para cada carousel
   const watchingCarouselRef = useRef<HTMLDivElement | null>(null);
@@ -63,8 +67,8 @@ export default function Home() {
   const isAnyUpdating = updatingIds.size > 0;
 
   useEffect(() => {
-    fetchContents();
-  }, [fetchContents]);
+    fetchHomeContents();
+  }, [fetchHomeContents]);
 
   const contentsByStatus = useMemo(() => {
     return {

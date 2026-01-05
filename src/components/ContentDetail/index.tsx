@@ -1,27 +1,53 @@
+// components/ContentDetailClient.tsx (ou onde estiver)
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import useContents from "@/hooks/useContents";
+import { LoadingOverlay } from "@/components/Loading/LoadingOverlay";
+import NotFound from "@/app/not-found";
+import { makePlaceholderDataUrl } from "@/lib/ImagePlaceholder";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import ContentPanel from "@/components/ContentDetail/ContentPainel";
 
 interface Props {
   id: string;
 }
 
 export default function ContentDetailClient({ id }: Props) {
-  const { contents, fetchContentById } = useContents();
+  const {
+    currentContent,
+    loading,
+    error,
+    fetchContentById,
+  } = useContents();
 
   useEffect(() => {
     if (!id) return;
-    // depende do comportamento do seu hook: se fetchContentById for estável (memoized),
-    // tudo bem. Caso contrário, envolva em useCallback no hook.
+    if (currentContent?.id === id) return;
     fetchContentById(id);
-  }, [id, fetchContentById]);
+  }, [id, fetchContentById, currentContent]);
 
-  const found = contents.find((c) => c.id === id);
+  const placeholder = useMemo(
+    () => makePlaceholderDataUrl(currentContent?.title, currentContent?.category ?? ""),
+    [currentContent?.title, currentContent?.category]
+  );
+
+  const coverSrc = currentContent?.coverUrl ?? null;
+
+  if (loading) return <LoadingOverlay />;
+  if (error) return (window.location.href = `/login`);
+  if (!currentContent) return <NotFound />;
 
   return (
-    <div>
-      <h1>Página do Post: {id}</h1>
-      <pre>{JSON.stringify(found ?? "Conteúdo não encontrado", null, 2)}</pre>
+    <div className="w-full my-4 flex flex-col gap-2 sm:px-10">
+      <Breadcrumbs
+        items={[
+          { label: "Início", href: "/home" },
+          { label: "Conteúdos", href: "/contents" },
+          { label: currentContent.title },
+        ]}
+      />
+
+      <ContentPanel content={currentContent} placeholder={placeholder} coverSrc={coverSrc} />
     </div>
   );
 }
