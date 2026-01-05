@@ -16,11 +16,11 @@ const links = [
     label: "Álbum de conteúdos",
     href: "/contents",
   },
-  {
-    label: "Comunidade",
-    href: "/community",
-    icon: ArrowUpRight,
-  },
+  // {
+  //   label: "Comunidade",
+  //   href: "/community",
+  //   icon: ArrowUpRight,
+  // },
 ];
 
 export function Header() {
@@ -28,13 +28,15 @@ export function Header() {
 
   return (
     // Concertando responsivo.
-    <header className="bg-background flex items-center justify-between py-4 px-3 sm:px-10 border-b border-gray-800 min-w-full">
-      <Link href="/" className="">
-        <Image src={Logo} alt="Watchlist Logo" width={125} height={24} />
+    <header className="bg-background flex items-center justify-between py-4 px-3 sm:px-10 border-b border-gray-900/50 min-w-full">
+      <Link href="/home" className="">
+        <Image src={Logo} alt="Watchlist Logo" loading="eager" width={125} height={24} />
       </Link>
 
       <nav className="hidden lg:flex items-center gap-12 text-gray-400">
-        {links.map(({ label, href, icon: Icon }) => (
+        {links.map(({ label, href, 
+        //icon: Icon
+         }) => (
           
           <Link
             key={href}
@@ -46,7 +48,7 @@ export function Header() {
               }`}
           >
             {label}
-            {Icon && <Icon size={20} />}
+            {/* {Icon && <Icon size={20} />} */}
           </Link>
         ))}
       </nav>

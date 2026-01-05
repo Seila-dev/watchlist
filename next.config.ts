@@ -2,6 +2,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    
+  },
   trailingSlash: false,
   images: {
     // remove "domains" e use somente remotePatterns
@@ -17,6 +20,9 @@ const nextConfig: NextConfig = {
       // entradas que você já tinha
       { protocol: "https", hostname: "cdn.myanimelist.net", pathname: "/**" },
       { protocol: "https", hostname: "image.tmdb.org", pathname: "/**" },
+
+      { protocol: "https", hostname: "media.discordapp.net", pathname: "/**" },
+      { protocol: "https", hostname: "cdn.discordapp.com", pathname: "/**" },
 
       // se precisar de subdomínios ou wildcard de hostname, use patterns como:
       // { protocol: "https", hostname: "**.example-cdn.com", pathname: "/**" },

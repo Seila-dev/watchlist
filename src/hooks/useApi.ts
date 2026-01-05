@@ -9,16 +9,19 @@ const cookieName = process.env.NEXT_PUBLIC_COOKIE_NAME || 'watchlist.token';
 
 const createApiInstance = (): AxiosInstance => {
   const api = axios.create({
-    baseURL: baseURL,
+    baseURL,
     timeout: 10000,
   });
 
   api.interceptors.request.use(
     (config) => {
-      const cookies = parseCookies();
-      const token = cookies[cookieName];
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      if (typeof window !== 'undefined') {
+        const cookies = parseCookies();
+        const token = cookies[cookieName];
+
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
       }
       return config;
     },
@@ -29,15 +32,16 @@ const createApiInstance = (): AxiosInstance => {
     (response) => response,
     (error: AxiosError) => {
       if (error.response?.status === 401) {
-        console.warn('Authentication failed - token may be expired');
-        destroyCookie(null, cookieName);
+        if (typeof window !== 'undefined') {
+          destroyCookie(null, cookieName);
+        }
       }
       return Promise.reject(error);
     }
-  )
+  );
 
   return api;
-}
+};
 
 let apiInstance: AxiosInstance | null = null;
 

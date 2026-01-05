@@ -9,6 +9,8 @@ import { makePlaceholderDataUrl } from "@/lib/ImagePlaceholder";
 import type { Content } from "@/types/content";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
+import { useRouter } from "next/navigation";
+import { translateCategory } from "@/lib/translations";
 
 type Props = Pick<
   Content,
@@ -16,27 +18,6 @@ type Props = Pick<
 > & {
   isUpdating?: boolean;
 };
-
-const CATEGORY_LABELS: Record<string, string> = {
-  MANGAS: "Mangás",
-  MOVIES: "Filmes",
-  BOOKS: "Livros",
-  ANIMES: "Animes",
-  SERIES: "Séries",
-};
-
-function translateCategory(cat?: string | null): string | null {
-  if (!cat) return null;
-  const key = String(cat).toUpperCase().trim();
-  return (
-    CATEGORY_LABELS[key] ??
-    String(key)
-      .toLowerCase()
-      .split("_")
-      .map((w) => w[0]?.toUpperCase() + w.slice(1))
-      .join(" ")
-  );
-}
 
 export function CardPreview({
   id,
@@ -52,12 +33,13 @@ export function CardPreview({
   const [failed, setFailed] = useState(false);
   const [favorite, setFavorite] = useState(Boolean(isFavorite));
   const { user } = useContext(AuthContext);
-  console.log(annotations)
 
   // draggable
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id,
   });
+
+  const router = useRouter();
 
   const placeholder = useMemo(() => makePlaceholderDataUrl(title, category ?? ""), [
     title,
@@ -70,11 +52,28 @@ export function CardPreview({
 
   const transformStyle = transform ? { transform: CSS.Translate.toString(transform) } : undefined;
 
+  const handleClick = () => {
+    if (isDragging) return;
+    router.push(`/contents/${encodeURIComponent(String(id))}`);
+  };
+
+  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      if (!isDragging) router.push(`/contents/${encodeURIComponent(String(id))}`);
+    }
+  };
+
   return (
     <div
       ref={setNodeRef}
       {...listeners}
       {...attributes}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      role="link"
+      tabIndex={0}
+      aria-label={`Abrir ${title}`}
       style={{
         ...transformStyle,
         // allow vertical page scroll while enabling horizontal drag detection on the card
@@ -86,7 +85,7 @@ export function CardPreview({
       // className={`group relative flex w-[180px] h-[285px] sm:w-[238px] sm:h-[355px] rounded-[20px] select-none transition-all duration-200 border-4 border-transparent border-solid hover:border-primary-700 ${
       //   isDragging ? "opacity-0" : "opacity-100"
       // } ${isUpdating ? "ring-2 ring-primary-700 ring-offset-transparent" : ""}`}
-      className={`group relative flex w-[250px] h-[355px] sm:w-[306px] sm:h-[425px] rounded-[20px] select-none transition-all duration-200 border-4 border-transparent border-solid hover:border-primary-700 ${isDragging ? "opacity-0" : "opacity-100"
+      className={`group relative flex w-[250px] h-[355px] sm:w-[306px] sm:h-[425px] rounded-[20px] select-none cursor-pointer transition-all duration-200 border-4 border-transparent border-solid hover:border-primary-700 ${isDragging ? "opacity-0" : "opacity-100"
         } ${isUpdating ? "ring-2 ring-primary-700 ring-offset-transparent" : ""}`}
     >
       {/* Grip: only visible on desktop via hover (hidden on mobile) */}
@@ -104,22 +103,24 @@ export function CardPreview({
       >
         <GripVertical size={17} className="text-grayBrand-300" />
       </button> */}
-              <div className="absolute top-2 right-2 p-1 rounded-full items-center justify-center z-20
+      <div className="absolute top-2 right-2 p-1 rounded-full items-center justify-center z-20
                    flex transition-opacity duration-150 pointer-events-none group-hover:pointer-events-auto">
-            <button
-              onClick={(ev) => {
-                ev.stopPropagation();
-                setFavorite((v) => !v);
-              }}
-              onPointerDown={(e) => e.stopPropagation()}
-              className="bg-grayBrand-900 p-2 flex rounded-full items-center justify-center"
-            >
-              <Heart
-                size={18}
-                className={favorite ? "text-primary-600 fill-primary-600" : "text-grayBrand-500"}
-              />
-            </button>
-          </div>
+        <button
+          onClick={(ev) => {
+            ev.stopPropagation();
+            setFavorite((v) => !v);
+          }}
+          onPointerDown={(e) => e.stopPropagation()}
+          className="bg-grayBrand-900 p-2 flex rounded-full items-center justify-center"
+          aria-pressed={favorite}
+          aria-label={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+        >
+          <Heart
+            size={18}
+            className={favorite ? "text-primary-600 fill-primary-600" : "text-grayBrand-500"}
+          />
+        </button>
+      </div>
 
       <div
         className="relative rounded-2xl overflow-hidden w-full h-full"
@@ -146,11 +147,11 @@ export function CardPreview({
         <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/100 via-black/100 to-transparent rounded-b-2xl" />
 
         <div className="absolute w-full p-5 bottom-1 left-0 text-white z-10 flex flex-col ">
-                      {translatedCategory && (
-              <div className=" rounded-full text-xs sm:text-sm text-grayBrand-500 flex items-center">
-                {translatedCategory}
-              </div>
-            )}
+          {translatedCategory && (
+            <div className=" rounded-full text-xs sm:text-sm text-grayBrand-500 flex items-center">
+              {translatedCategory}
+            </div>
+          )}
           <h3 className="font-bold mb-2 text-sm sm:text-lg text-white line-clamp-1">
             {title}
           </h3>
@@ -158,12 +159,12 @@ export function CardPreview({
           <div className="flex items-center justify-between text-xs sm:text-sm font-medium mt-0">
 
 
-            { rating !== null && rating !== undefined && rating > 0 &&
+            {rating !== null && rating !== undefined && rating > 0 &&
               <div className="text-grayBrand-500 flex items-center">
                 <img src={starIcon.src} className="h-5 mr-1" alt="Star" />
-                {rating.toFixed(1)} / 10
-                </div>
-            
+                {rating.toFixed(1)} / 5
+              </div>
+
             }
             {annotations !== null && annotations !== undefined && annotations.length > 0 ? (
               <div className=" rounded-full text-sm text-grayBrand-500 flex items-center">
@@ -173,7 +174,7 @@ export function CardPreview({
               <div className="text-grayBrand-500 flex items-center">
                 <Edit size={16} className="mr-1 w-5" />
                 Sem anotações
-                </div>
+              </div>
             )}
           </div>
         </div>
